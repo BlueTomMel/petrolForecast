@@ -1,0 +1,482 @@
+date,suburb,station,postcode,price
+2025-07-25 01:20:11,Hoppers Crossing,BP Wyndham,3029,183.9
+2025-07-25 01:20:11,Point Cook,7-Eleven Point Cook,3030,176.5
+2025-07-25 01:20:11,Point Cook,Coles Express Sanctuary Lakes,3030,175.9
+2025-07-25 01:20:11,Seabrook,BP Point Cook,3028,175.9
+2025-07-25 01:20:11,Hoppers Crossing,EG Ampol Hoppers Crossing,3029,183.9
+2025-07-25 01:20:11,Hoppers Crossing,7-Eleven Hoppers Crossing,3029,183.9
+2025-07-25 01:20:11,Hoppers Crossing,APCO Hoppers Crossing,3030,161.9
+2025-07-25 01:20:11,Tarneit,Coles Express Tarneit,3029,169.9
+2025-07-25 01:20:11,Hoppers Crossing,7-Eleven Hoppers Crossing,3029,169.9
+2025-07-25 01:20:11,Hoppers Crossing,United Hoppers Crossing,3029,175.9
+2025-07-25 01:20:11,Hoppers Crossing,7-Eleven Hoppers Crossing,3029,173.9
+2025-07-25 01:20:11,Truganina,7-Eleven Truganina,3029,165.7
+2025-07-25 01:20:11,Truganina,United Truganina,3029,161.7
+2025-07-25 01:20:11,Point Cook,United Point Cook,3030,173.5
+2025-07-25 01:20:11,Truganina,Liberty Truganina,3029,161.7
+2025-07-25 01:20:11,Truganina,Coles Express Williams Landing,3029,173.9
+2025-07-25 01:20:11,Williams Landing,BP Williams Landing,3027,173.9
+2025-07-25 01:20:11,Truganina,Metro Truganina,3029,164.5
+2025-07-25 01:20:11,Truganina,Vibe Truganina,3029,165.7
+2025-07-25 01:20:11,Truganina,BP Truganina South,3029,165.9
+2025-07-25 01:20:11,Truganina,Ampol Truganina,3029,165.9
+2025-07-25 01:20:11,Truganina,Coles Express Truganina,3029,164.9
+2025-07-25 01:20:11,Truganina,BP Truganina,3029,165.9
+2025-07-25 01:20:11,Derrimut,Ampol Robinsons Rd (Derrimut),3026,164.5
+2025-07-25 01:20:11,Truganina,United Truganina North,3029,164.5
+2025-07-25 01:20:11,Laverton,Coles Express Laverton,3028,175.9
+2025-07-25 01:20:11,Altona Meadows,EG Ampol Altona Meadows,3028,175.9
+2025-07-25 01:20:11,Laverton North,United Laverton North,3026,161.7
+2025-07-25 01:20:11,Altona Meadows,Coles Express Altona Meadows,3028,175.9
+2025-07-25 01:20:11,Laverton North,EG Ampol Laverton North,3026,167.9
+2025-07-25 01:20:11,Laverton North,BP Laverton,3026,167.9
+2025-07-25 01:20:11,Laverton North,Ampol Laverton North,3026,242.0
+2025-07-25 01:20:11,Laverton North,Riordan Fuels Laverton North,3026,181.9
+2025-07-25 01:20:11,Derrimut,Coles Express Laverton North,3030,167.9
+2025-07-25 01:20:11,Derrimut,Pacific Fuel Derrimut Unmanned,3030,199.9
+2025-07-25 01:20:11,Ardeer,Coles Express Ardeer,3022,179.9
+2025-07-25 01:20:11,Altona,7-Eleven Altona West,3018,167.9
+2025-07-25 01:20:11,Altona,Ampol Altona,3018,167.9
+2025-07-25 01:20:11,Seaholme,Liberty Seaholme,3018,167.5
+2025-07-25 01:20:11,Altona North,United Altona,3025,167.5
+2025-07-25 01:20:11,Altona North,Coles Express Altona Grieve Pde,3025,167.9
+2025-07-25 01:20:11,Altona North,BP Altona North,3025,167.3
+2025-07-25 01:20:11,Laverton North,Liberty Diesel Depot Laverton North,3026,177.9
+2025-07-25 01:20:11,Laverton North,Ampol Laverton North,3026,169.9
+2025-07-25 01:20:11,Laverton North,BP Energy Fuel Laverton,3026,169.9
+2025-07-25 01:20:11,Ardeer,7-Eleven Ardeer South,3022,179.9
+2025-07-25 01:20:11,Ardeer,7-Eleven Ardeer North,3022,179.9
+2025-07-25 01:20:11,Altona North,Coles Express Altona North,3025,167.9
+2025-07-25 01:20:11,Laverton North,Caltex Laverton North,3026,167.9
+2025-07-25 01:20:11,Laverton North,Coles Express Laverton North,3026,169.9
+2025-07-25 01:20:11,Brooklyn,Astron Brooklyn South,3012,163.9
+2025-07-25 01:20:11,Brooklyn,BP Brooklyn,3012,168.9
+2025-07-25 01:20:11,Rockbank,7-Eleven Rockbank,3335,175.9
+2025-07-25 01:20:11,Derrimut,United Petroleum Derrimut,3030,165.9
+2025-07-25 01:20:11,Caroline Springs,BP Connect Caroline Springs,3023,169.9
+2025-07-25 01:20:11,Ravenhall,Coles Express Burnside,3023,169.9
+2025-07-25 01:20:11,Deer Park,BP Deer Park,3023,167.9
+2025-07-25 01:20:11,Caroline Springs,7-Eleven Caroline Springs,3023,168.9
+2025-07-25 01:20:11,Taylors Hill,Coles Express Taylors Hill,3037,168.9
+2025-07-25 01:20:11,Taylors Hill,EG Ampol Taylors Hill,3037,168.9
+2025-07-25 01:20:11,Derrimut,7-Eleven Derrimut,3030,164.5
+2025-07-25 01:20:11,Deer Park,Ampol Deer Park,3023,164.9
+2025-07-25 01:20:11,Deer Park,OOM Energy Deer Park,3023,164.7
+2025-07-25 01:20:11,Deer Park,United Deer Park,3023,164.7
+2025-07-25 01:20:11,Deer Park,EG Ampol Deer Park,3023,164.9
+2025-07-25 01:20:11,Ardeer,Costco Ardeer,3022,163.7
+2025-07-25 01:20:11,Deer Park,United Deer Park,3023,164.7
+2025-07-25 01:20:11,St Albans,7-Eleven St Albans,3021,164.9
+2025-07-25 01:20:11,St Albans,Coles Express St Albans,3021,164.9
+2025-07-25 01:20:11,St Albans,7-Eleven St Albans,3021,164.9
+2025-07-25 01:20:11,Sunshine,United Sunshine,3020,164.7
+2025-07-25 01:20:11,Sunshine,Speedway Sunshine,3020,163.5
+2025-07-25 01:20:11,Sunshine,7-Eleven Sunshine,3020,165.9
+2025-07-25 01:20:11,Sunshine,EG Ampol Sunshine,3020,165.9
+2025-07-25 01:20:11,Sunshine North,United Sunshine North,3020,164.7
+2025-07-25 01:20:11,Sunshine,7-Eleven Sunshine,3020,165.9
+2025-07-25 01:20:11,Sunshine North,EG Ampol Sunshine North,3020,165.9
+2025-07-25 01:20:11,Sunshine,Coles Express Sunshine,3020,165.9
+2025-07-25 01:20:11,Sunshine,BP Sunshine,3020,164.9
+2025-07-25 01:20:11,St Albans,7-Eleven St Albans South,3021,169.9
+2025-07-25 01:20:11,St Albans,Astron St Albans,3021,163.9
+2025-07-25 01:20:11,St Albans,7-Eleven St Albans North,3021,179.9
+2025-07-25 01:20:11,St Albans North,United St Albans North,3021,164.9
+2025-07-25 01:20:11,Kealba,Coles Express Kealba,3021,169.9
+2025-07-25 01:20:11,Kealba,Ampol Kealba,3021,169.9
+2025-07-25 01:20:11,Keilor,Coles Express Keilor,3036,169.9
+2025-07-25 01:20:11,Taylors Lakes,Coles Express Taylors Lakes,3038,175.9
+2025-07-25 01:20:11,Taylors Lakes,7-Eleven Taylors Lakes,3038,175.9
+2025-07-25 01:20:11,Black Rock,7-Eleven Black Rock,3193,167.9
+2025-07-25 01:20:11,Edithvale,BP Edithvale,3196,169.9
+2025-07-25 01:20:11,Mentone,U-GO Mentone,3194,165.5
+2025-07-25 01:20:11,Mentone,Coles Express Mentone,3194,165.9
+2025-07-25 01:20:11,Mentone,BP Supremacy,3194,166.9
+2025-07-25 01:20:11,Mentone,United Mentone,3194,165.9
+2025-07-25 01:20:11,Braeside,EG Ampol Braeside,3195,167.9
+2025-07-25 01:20:11,Mordialloc,Coles Express Mordialloc,3195,167.9
+2025-07-25 01:20:11,Cheltenham,Liberty Cheltenham Markets,3192,165.7
+2025-07-25 01:20:11,Seaford North,United Seaford North,3198,163.9
+2025-07-25 01:20:11,Seaford,FUEL ZONE,3198,159.9
+2025-07-25 01:20:11,Patterson Lakes,EG Ampol Patterson Lakes,3197,170.9
+2025-07-25 01:20:11,Patterson Lakes,United Patterson Lakes,3197,168.9
+2025-07-25 01:20:11,Carrum Downs,United Carrum Downs,3201,163.9
+2025-07-25 01:20:11,Carrum Downs,Endeavour Carrum Downs,3201,169.9
+2025-07-25 01:20:11,Chelsea,EG Ampol Chelsea,3196,171.9
+2025-07-25 01:20:11,Aspendale Gardens,BP Aspendale Gardens,3195,169.5
+2025-07-25 01:20:11,Chelsea Heights,Ampol Chelsea Heights,3196,173.9
+2025-07-25 01:20:11,Aspendale,7-Eleven Aspendale,3195,167.9
+2025-07-25 01:20:11,Mordialloc,BP Mentone,3195,167.9
+2025-07-25 01:20:11,Braeside,Astron Braeside,3195,167.5
+2025-07-25 01:20:11,Moorabbin Airport,Costco Moorabbin,3194,162.7
+2025-07-25 01:20:11,Dingley,Coles Express Dingley,3172,167.9
+2025-07-25 01:20:11,Dingley,7-Eleven Dingley,3172,167.9
+2025-07-25 01:20:11,Braeside,Coles Express Braeside,3195,167.9
+2025-07-25 01:20:11,Keysborough,7-Eleven Keysborough,3173,163.9
+2025-07-25 01:20:11,Dingley Village,Metro Petroleum Dingley Village,3172,167.9
+2025-07-25 01:20:11,Dingley Village,Shell Dingley Village,3172,167.9
+2025-07-25 01:20:11,Keysborough,EG Ampol Keysborough,3173,165.9
+2025-07-25 01:20:11,Springvale,BP Springvale South,3172,167.9
+2025-07-25 01:20:11,Springvale South,7-Eleven Springvale South,3172,167.9
+2025-07-25 01:20:11,Dandenong South,Riordan Fuels Dandenong,3164,181.9
+2025-07-25 01:20:11,Dandenong South,Pacific Fuel Dandenong,3175,179.7
+2025-07-25 01:20:11,Keysborough,BP Keysborough South,3173,167.9
+2025-07-25 01:20:11,Keysborough,7-Eleven Keysborough,3173,163.9
+2025-07-25 01:20:11,Keysborough,U-GO Keysborough,3173,162.2
+2025-07-25 01:20:11,Dandenong,United Dandenong South,3175,162.3
+2025-07-25 01:20:11,Dandenong South,Coles Express Dandenong South,3175,162.9
+2025-07-25 01:20:11,Dandenong,United Dandenong (Cheltenham Rd),3175,162.3
+2025-07-25 01:20:11,Dandenong,United Dandenong Central,3175,162.3
+2025-07-25 01:20:11,Altona North,7-Eleven Altona,3018,168.5
+2025-07-25 01:20:11,Williamstown,EG Ampol Williamstown,3016,167.8
+2025-07-25 01:20:11,Williamstown North,BP Williamstown North,3016,167.9
+2025-07-25 01:20:11,Newport,BP Newport,3015,173.7
+2025-07-25 01:20:11,Newport,BP Williamstown,3015,169.9
+2025-07-25 01:20:11,Newport,7-Eleven Newport,3015,169.9
+2025-07-25 01:20:11,Altona North,EG Ampol Altona North,3025,167.9
+2025-07-25 01:20:11,Brooklyn,Ampol Brooklyn Diesel Stop,3012,169.9
+2025-07-25 01:20:11,Altona North,United Altona North (West Fuel Service Centre),3025,174.9
+2025-07-25 01:20:11,Tottenham,Shell Tottenham,3012,164.9
+2025-07-25 01:20:11,Spotswood,Coles Express Spotswood,3015,169.9
+2025-07-25 01:20:11,Yarraville,United Yarraville,3013,201.9
+2025-07-25 01:20:11,West Footscray,7-Eleven Footscray West,3012,164.9
+2025-07-25 01:20:11,Kingsville,Somerville Servo,3012,160.9
+2025-07-25 01:20:11,Yarraville,7-Eleven Yarraville,3013,158.5
+2025-07-25 01:20:11,Kingsville,Metco Kingsville (Unmanned),3012,158.4
+2025-07-25 01:20:11,Williamstown,Metro Williamstown,3016,163.9
+2025-07-25 01:20:11,Williamstown North,7-Eleven Williamstown North,3016,169.9
+2025-07-25 01:20:11,Yarraville,Shell Yarraville,3013,159.5
+2025-07-25 01:20:11,Yarraville,Ampol Yarraville,3013,158.9
+2025-07-25 01:20:11,Footscray,BP Footscray,3011,169.9
+2025-07-25 01:20:11,Footscray,BP Whitehall,3011,169.9
+2025-07-25 01:20:11,Footscray,Coles Express Footscray,3011,158.9
+2025-07-25 01:20:11,Port Melbourne,Coles Express Westgate North,3207,168.9
+2025-07-25 01:20:11,Port Melbourne,United West Gate South,3207,168.9
+2025-07-25 01:20:11,Port Melbourne,United West Gate North,3207,168.9
+2025-07-25 01:20:11,Kensington,United Kensington,3031,165.7
+2025-07-25 01:20:11,Sandringham,Ampol Woolworths Sandringham,3191,179.9
+2025-07-25 01:20:11,Brighton,BP 2GO Brighton Petrol Spy,3186,179.9
+2025-07-25 01:20:11,Brighton,Brighton Petroleum - Sunrise Local Store,3186,173.9
+2025-07-25 01:20:11,Brighton East,BP Bayside Gateway,3187,173.9
+2025-07-25 01:20:11,Gardenvale,Coles Express Gardenvale,3185,173.9
+2025-07-25 01:20:11,Elsternwick,Ampol Elsternwick,3185,171.9
+2025-07-25 01:20:11,Caulfield North,IGA Express Caulfield,3161,173.9
+2025-07-25 01:20:11,Albert Park,Ampol Albert Park,3206,179.9
+2025-07-25 01:20:11,Port Melbourne,BP Port Melbourne,3207,179.9
+2025-07-25 01:20:11,Port Melbourne,7-Eleven Port Melbourne,3207,179.9
+2025-07-25 01:20:11,South Melbourne,Shell South Melbourne,3205,177.9
+2025-07-25 01:20:11,North Melbourne,EG Ampol North Melbourne,3051,168.9
+2025-07-25 01:20:11,North Melbourne,Liberty Nth Melbourne,3051,169.7
+2025-07-25 01:20:11,Southbank,BP Connect Clarendon,3006,179.9
+2025-07-25 01:20:11,South Melbourne,United South Melbourne,3205,168.9
+2025-07-25 01:20:11,South Melbourne,Ampol Foodary South Melbourne,3205,179.9
+2025-07-25 01:20:11,South Melbourne,BP South Melbourne (Kingsway),3205,179.9
+2025-07-25 01:20:11,North Melbourne,7-Eleven Royal Melbourne,3051,169.9
+2025-07-25 01:20:11,Carlton,Coles Express Carlton (VIC),3053,169.9
+2025-07-25 01:20:11,Carlton,BP Carlton,3053,169.9
+2025-07-25 01:20:11,Fitzroy,7-Eleven Fitzroy,3065,169.9
+2025-07-25 01:20:11,Carlton,Metro Petroleum Carlton,3053,169.7
+2025-07-25 01:20:11,Elwood,Shell OTR Connect St Kilda Marina,3184,172.9
+2025-07-25 01:20:11,St Kilda,Coles Express St Kilda,3182,173.9
+2025-07-25 01:20:11,St Kilda,7-Eleven St Kilda,3182,173.9
+2025-07-25 01:20:11,St Kilda,EG Ampol St Kilda,3182,173.9
+2025-07-25 01:20:11,St Kilda,7-Eleven St Kilda,3182,173.9
+2025-07-25 01:20:11,South Yarra,Ampol Foodary South Yarra,3141,173.9
+2025-07-25 01:20:11,Windsor,Coles Express Windsor (VIC),3181,173.9
+2025-07-25 01:20:11,Elsternwick,7-Eleven North Elsternwick,3185,169.9
+2025-07-25 01:20:11,Prahran,BP Prahran,3181,169.9
+2025-07-25 01:20:11,Prahran,BP East Prahran,3181,176.9
+2025-07-25 01:20:11,South Yarra,Coles Express South Yarra,3141,173.9
+2025-07-25 01:20:11,Prahran East,7-Eleven Prahran East,3181,173.9
+2025-07-25 01:20:11,Richmond,Coles Express Richmond,3121,169.9
+2025-07-25 01:20:11,Richmond,BP Richmond - Church Street,3121,169.9
+2025-07-25 01:20:11,Fitzroy North,BP Fitzroy,3065,169.9
+2025-07-25 01:20:11,Collingwood,Coles Express Collingwood,3066,169.9
+2025-07-25 01:20:11,East Melbourne,Coles Express East Melbourne,3002,169.9
+2025-07-25 01:20:11,Abbotsford,Ampol Abbotsford,3067,169.9
+2025-07-25 01:20:11,Collingwood,Little Sam,3066,199.9
+2025-07-25 01:20:11,Collingwood,Metro Collingwood,3066,169.9
+2025-07-25 01:20:11,Fitzroy,EG Ampol Fitzroy,3065,169.9
+2025-07-25 01:20:11,Abbotsford,Coles Express Abbotsford,3067,169.9
+2025-07-25 01:20:11,Richmond,BP Swan Street,3121,169.9
+2025-07-25 01:20:11,Richmond,Shell Richmond,3121,173.9
+2025-07-25 01:20:11,Richmond,7-Eleven Richmond,3121,169.9
+2025-07-25 01:20:11,Sunshine,Metro Petroleum Sunshine,3020,163.9
+2025-07-25 01:20:11,Braybrook,7-Eleven Braybrook,3019,165.9
+2025-07-25 01:20:11,Braybrook,BP Braybrook,3019,165.9
+2025-07-25 01:20:11,Braybrook,Metro Braybrook,3019,163.7
+2025-07-25 01:20:11,Avondale Heights,Ampol Avondale Heights,3034,169.9
+2025-07-25 01:20:11,Maidstone,Liberty Maidstone,3012,160.9
+2025-07-25 01:20:11,Maidstone,Dayef Petroleum Maidstone,3012,159.7
+2025-07-25 01:20:11,Maidstone,7-Eleven Maidstone,3012,159.9
+2025-07-25 01:20:11,Maidstone,Ampol Maidstone,3012,159.9
+2025-07-25 01:20:11,Maribyrnong,EG Ampol Maribyrnong,3032,159.9
+2025-07-25 01:20:11,Keilor East,Coles Express Keilor East,3033,169.9
+2025-07-25 01:20:11,Keilor East,7-Eleven Keilor East,3033,169.9
+2025-07-25 01:20:11,Keilor Park,BP Keilor Park Drive,3042,169.9
+2025-07-25 01:20:11,Keilor Park,Caltex OTR Keilor Park,3042,168.9
+2025-07-25 01:20:11,Keilor Park,Coles Express Keilor Park,3042,169.9
+2025-07-25 01:20:11,Tullamarine,Ampol Tullamarine,3043,162.9
+2025-07-25 01:20:11,Airport West,EG Ampol Airport West,3042,161.9
+2025-07-25 01:20:11,Footscray,Ampol Footscray,3011,159.9
+2025-07-25 01:20:11,Maribyrnong,Metro Maribyrnong,3032,159.7
+2025-07-25 01:20:11,Maribyrnong,Astron Maribyrnong,3032,157.9
+2025-07-25 01:20:11,Maribyrnong,7-Eleven Maribyrnong,3032,157.9
+2025-07-25 01:20:11,Ascot Vale,Ampol Ascot Vale,3032,169.9
+2025-07-25 01:20:11,Kensington,Coles Express Flemington,3031,169.9
+2025-07-25 01:20:11,Ascot Vale,Metro Showgrounds,3032,165.9
+2025-07-25 01:20:11,Ascot Vale,Enhance Ascot Vale,3032,164.9
+2025-07-25 01:20:11,Moonee Ponds,EG Ampol Moonee Ponds,3039,164.9
+2025-07-25 01:20:11,Moonee Ponds,7-Eleven Moonee Ponds,3039,165.5
+2025-07-25 01:20:11,Moonee Ponds,Coles Express Moonee Ponds,3039,164.9
+2025-07-25 01:20:11,Moonee Ponds,7-Eleven Moonee Ponds,3039,164.9
+2025-07-25 01:20:11,Moonee Ponds,Shell OTR Moonee Ponds,3039,164.9
+2025-07-25 01:20:11,Essendon,EG Ampol Niddrie,3040,169.9
+2025-07-25 01:20:11,Essendon North,Coles Express Essendon,3041,169.9
+2025-07-25 01:20:11,Niddrie,7-Eleven Niddrie,3042,169.9
+2025-07-25 01:20:11,Airport West,Ampol Airport West,3042,169.9
+2025-07-25 01:20:11,Strathmore,7-Eleven Strathmore,3041,165.5
+2025-07-25 01:20:11,Strathmore,Gino's Service Station,3041,183.9
+2025-07-25 01:20:11,Essendon,Jet Service Station,3040,178.9
+2025-07-25 01:20:11,Pascoe Vale,7-Eleven Pascoe Vale,3044,175.9
+2025-07-25 01:20:11,Glenroy,Metro Glenroy,3046,174.9
+2025-07-25 01:20:11,Glenroy,Coles Express Glenroy,3046,175.9
+2025-07-25 01:20:11,Tullamarine,7-Eleven Tullamarine,3043,162.5
+2025-07-25 01:20:11,Glenroy,Ampol Glenroy,3046,175.9
+2025-07-25 01:20:11,Flemington,BP Flemington,3031,169.9
+2025-07-25 01:20:11,Flemington,7-Eleven Flemington,3031,168.9
+2025-07-25 01:20:11,Flemington,7-Eleven Flemington,3031,169.9
+2025-07-25 01:20:11,Brunswick West,Metro Brunswick West,3055,176.9
+2025-07-25 01:20:11,Brunswick,7-Eleven Brunswick,3056,177.7
+2025-07-25 01:20:11,Brunswick West,BP Brunswick,3055,177.7
+2025-07-25 01:20:11,Coburg,EG Ampol Coburg,3058,177.7
+2025-07-25 01:20:11,Brunswick East,Coles Express Brunswick,3057,174.9
+2025-07-25 01:20:11,Coburg,U-GO Coburg,3058,178.9
+2025-07-25 01:20:11,Brunswick East,Coles Express Holmes Street,3057,169.9
+2025-07-25 01:20:11,Brunswick,Food Plus Fuel,3056,164.9
+2025-07-25 01:20:11,Pascoe Vale South,7-Eleven Pascoe Vale South,3044,169.9
+2025-07-25 01:20:11,Pascoe Vale,EG Ampol Pascoe Vale,3044,169.9
+2025-07-25 01:20:11,Coburg,BP Southvale,3058,169.9
+2025-07-25 01:20:11,Coburg,Coles Express Coburg,3058,169.9
+2025-07-25 01:20:11,Pascoe Vale,Speedway Pascoe Vale,3044,169.9
+2025-07-25 01:20:11,Coburg,Shell Coburg,3058,160.9
+2025-07-25 01:20:11,Coburg,Liberty Coburg,3058,159.9
+2025-07-25 01:20:11,Coburg North,Metro Coburg North,3058,159.9
+2025-07-25 01:20:11,Coburg,BP North Coburg,3058,165.9
+2025-07-25 01:20:11,Fawkner,Coles Express Fawkner,3060,169.9
+2025-07-25 01:20:11,Fawkner,BP Fawkner,3060,165.9
+2025-07-25 01:20:11,Fitzroy,United Fitzroy,3065,169.7
+2025-07-25 01:20:11,Clifton Hill,Coles Express Fitzroy,3068,169.9
+2025-07-25 01:20:11,Fitzroy North,BP North Fitzroy,3068,169.9
+2025-07-25 01:20:11,Clifton Hill,7-Eleven Clifton Hill,3068,169.9
+2025-07-25 01:20:11,Northcote,Ampol Northcote,3070,169.9
+2025-07-25 01:20:11,Thornbury,BP Rio Motors,3071,169.9
+2025-07-25 01:20:11,Northcote,EG Ampol Northcote,3070,169.9
+2025-07-25 01:20:11,Fairfield,Coles Express Fairfield (VIC),3078,169.9
+2025-07-25 01:20:11,Thornbury,7-Eleven Thornbury,3071,169.9
+2025-07-25 01:20:11,Preston,Caltex Preston,3072,169.9
+2025-07-25 01:20:11,Northcote,7-Eleven Northcote,3070,169.9
+2025-07-25 01:20:11,Coburg,7-Eleven East Coburg,3058,169.9
+2025-07-25 01:20:11,Preston,Coles Express Preston,3072,169.9
+2025-07-25 01:20:11,Reservoir,Caltex Reservoir,3073,167.9
+2025-07-25 01:20:11,Preston,BP Preston,3072,169.9
+2025-07-25 01:20:11,Preston,EG Ampol Preston,3072,169.9
+2025-07-25 01:20:11,Preston,Shell Preston,3072,169.9
+2025-07-25 01:20:11,Preston,Liberty Preston Plenty Rd,3072,168.9
+2025-07-25 01:20:11,Reservoir,Metro Reservoir South,3073,169.9
+2025-07-25 01:20:11,Reservoir,Liberty Reservoir,3073,165.9
+2025-07-25 01:20:11,Reservoir,Ampol Reservoir,3073,169.9
+2025-07-25 01:20:11,Reservoir,Coles Express Reservoir (VIC),3073,169.9
+2025-07-25 01:20:11,Fawkner,Ampol Fawkner,3060,169.9
+2025-07-25 01:20:11,Sandringham,7-Eleven Sandringham,3191,173.9
+2025-07-25 01:20:11,Hampton,BP Highbluff,3188,173.9
+2025-07-25 01:20:11,Highett,7-Eleven Sandringham,3190,173.9
+2025-07-25 01:20:11,Hampton,Coles Express Hampton,3188,173.9
+2025-07-25 01:20:11,Hampton,7-Eleven Hampton,3188,179.9
+2025-07-25 01:20:11,Highett,United Highett,3190,165.9
+2025-07-25 01:20:11,Cheltenham,Ampol Cheltenham,3192,167.9
+2025-07-25 01:20:11,Moorabbin,Coles Express Moorabbin,3189,171.9
+2025-07-25 01:20:11,Moorabbin,Ampol Foodary Moorabbin,3189,171.9
+2025-07-25 01:20:11,McKinnon,Ampol Mckinnon,3204,168.0
+2025-07-25 01:20:11,McKinnon,Mckinnon Petrol,3204,168.9
+2025-07-25 01:20:11,Ormond,Coles Express Ormond,3204,169.9
+2025-07-25 01:20:11,Caulfield,7-Eleven Caulfield,3162,171.9
+2025-07-25 01:20:11,Glen Huntly,EG Ampol Glen Huntly,3163,169.9
+2025-07-25 01:20:11,Bentleigh East,United Bentleigh East,3165,168.9
+2025-07-25 01:20:11,Mckinnon,7-Eleven McKinnon,3204,172.9
+2025-07-25 01:20:11,Bentleigh East,Coles Express Bentleigh East,3165,172.9
+2025-07-25 01:20:11,Cheltenham,Coles Express Cheltenham,3192,167.9
+2025-07-25 01:20:11,Cheltenham North,Ampol Cheltenham North,3192,166.9
+2025-07-25 01:20:11,Cheltenham,United Cheltenham,3192,164.9
+2025-07-25 01:20:11,Moorabbin,Coles Express Warrigal Road,3189,165.9
+2025-07-25 01:20:11,Heatherton,Kingston Garage,3202,164.9
+2025-07-25 01:20:11,Moorabbin,BP Moorabbin,3189,167.9
+2025-07-25 01:20:11,Clarinda,EG Ampol Clarinda,3169,168.9
+2025-07-25 01:20:11,Clarinda,7-Eleven Clarinda,3169,165.9
+2025-07-25 01:20:11,Murrumbeena,Astron Murrumbeena,3163,172.7
+2025-07-25 01:20:11,Murrumbeena,EG Ampol Murrumbeena,3163,172.9
+2025-07-25 01:20:11,Oakleigh South,EG Ampol Oakleigh South,3167,168.9
+2025-07-25 01:20:11,Oakleigh South,7-Eleven Oakleigh South,3167,168.9
+2025-07-25 01:20:11,Oakleigh,BP Hughesdale,3166,169.9
+2025-07-25 01:20:11,Murrumbeena,Astron Murrumbeena,3163,174.9
+2025-07-25 01:20:11,Malvern East,Pacific Chadstone,3145,166.7
+2025-07-25 01:20:11,Oakleigh,BP Oakleigh,3166,169.9
+2025-07-25 01:20:11,Oakleigh South,Ampol Oakleigh South,3167,169.9
+2025-07-25 01:20:11,Oakleigh,Coles Express Oakleigh,3166,169.9
+2025-07-25 01:20:11,Oakleigh,BP Plantation,3166,169.9
+2025-07-25 01:20:11,Oakleigh,Coles Express Oakleigh,3166,169.9
+2025-07-25 01:20:11,Chadstone,BP Chadstone,3148,169.9
+2025-07-25 01:20:11,Malvern,Coles Express Malvern,3144,173.9
+2025-07-25 01:20:11,Malvern,Coles Express Glenvern,3144,173.9
+2025-07-25 01:20:11,Malvern,BP Malvern,3144,189.9
+2025-07-25 01:20:11,Malvern East,BP East Malvern,3145,174.9
+2025-07-25 01:20:11,Malvern East,7-Eleven Malvern East,3145,173.9
+2025-07-25 01:20:11,Hawthorn East,7-Eleven Tooronga Valley,3123,172.9
+2025-07-25 01:20:11,Camberwell,EG Ampol Camberwell,3124,172.9
+2025-07-25 01:20:11,Hawthorn,7-Eleven Hawthorn,3122,180.5
+2025-07-25 01:20:11,Hawthorn,7-Eleven Hawthorn,3122,179.9
+2025-07-25 01:20:11,Auburn,7-Eleven Auburn,3123,179.9
+2025-07-25 01:20:11,Hawthorn,7-Eleven Hawthorn,3122,179.9
+2025-07-25 01:20:11,Hawthorn,Shell Hawthorn,3122,179.9
+2025-07-25 01:20:11,Kew,United Kew,3101,162.7
+2025-07-25 01:20:11,Kew,Ampol Woolworths Kew,3101,167.9
+2025-07-25 01:20:11,Hawthorn East,Coles Express Auburndale,3122,179.9
+2025-07-25 01:20:11,Hawthorn East,Ampol Hawthorn East,3123,179.9
+2025-07-25 01:20:11,Camberwell,EG Ampol Camberwell,3124,179.9
+2025-07-25 01:20:11,Camberwell,Coles Express Camberwell,3124,179.9
+2025-07-25 01:20:11,Kew,Coles Express Kew,3102,179.9
+2025-07-25 01:20:11,Kew,Coles Express Cotham Road,3101,175.9
+2025-07-25 01:20:11,Kew East,BP Kew East,3102,169.9
+2025-07-25 01:20:11,Glen Iris,BP Glen Iris,3146,171.9
+2025-07-25 01:20:11,Ashburton,Coles Express Ashburton,3147,171.9
+2025-07-25 01:20:11,Camberwell,BP Camberwell,3124,169.9
+2025-07-25 01:20:11,Chadstone,7-Eleven Chadstone,3148,169.9
+2025-07-25 01:20:11,Chadstone,U-GO Chadstone,3148,165.5
+2025-07-25 01:20:11,Ashwood,7-Eleven Ashwood,3147,169.9
+2025-07-25 01:20:11,Burwood,Coles Express Burwood,3125,169.9
+2025-07-25 01:20:11,Burwood,BP Burwood,3125,169.9
+2025-07-25 01:20:11,Balwyn,EG Ampol Balwyn,3103,175.9
+2025-07-25 01:20:11,Balwyn,United Balwyn,3103,175.7
+2025-07-25 01:20:11,Surrey Hills,Coles Express Surrey Hills,3127,169.9
+2025-07-25 01:20:11,Balwyn,Coles Express Balwyn,3103,175.9
+2025-07-25 01:20:11,Clayton South,BP Clayton South,3169,179.9
+2025-07-25 01:20:11,Clayton South,OOM Energy Clayton South,3169,162.9
+2025-07-25 01:20:11,Clayton South,BP Clayton,3169,173.9
+2025-07-25 01:20:11,Clayton South,BP Clayton South,3169,169.9
+2025-07-25 01:20:11,Springvale,Springvale Convenience Store,3171,165.7
+2025-07-25 01:20:11,Clayton,Shell Clayton,3168,165.9
+2025-07-25 01:20:11,Mulgrave,Atlas Fuel Mulgrave,3170,147.9
+2025-07-25 01:20:11,Huntingdale,EG Ampol Huntingdale,3166,165.9
+2025-07-25 01:20:11,Clayton,United Clayton,3168,166.9
+2025-07-25 01:20:11,Clayton,BP Clayton North Rd,3168,165.9
+2025-07-25 01:20:11,Clayton,7-Eleven Clayton,3168,165.9
+2025-07-25 01:20:11,Mount Waverley,7-Eleven Mount Waverley,3149,167.9
+2025-07-25 01:20:11,Mount Waverley,BP Mt Waverley,3149,166.9
+2025-07-25 01:20:11,Mount Waverley,BP Fernhill,3149,169.9
+2025-07-25 01:20:11,Mount Waverley,Metco Mount Waverley,3149,165.5
+2025-07-25 01:20:11,Clayton,Astron Clayton,3168,165.9
+2025-07-25 01:20:11,Clayton,Coles Express Clayton,3168,166.9
+2025-07-25 01:20:11,Clayton,EG Ampol Clayton,3168,166.9
+2025-07-25 01:20:11,Notting Hill,United Notting Hill,3168,165.9
+2025-07-25 01:20:11,Mount Waverley,Ampol Mount Waverley,3149,166.9
+2025-07-25 01:20:11,Glen Waverley,7-Eleven Glen Waverley,3150,166.9
+2025-07-25 01:20:11,Springvale South,BP Heatherhill,3172,169.9
+2025-07-25 01:20:11,Springvale,Astron Springvale,3171,169.9
+2025-07-25 01:20:11,Noble Park,7-Eleven Noble Park,3174,169.9
+2025-07-25 01:20:11,Noble Park,7-Eleven Sandown,3174,158.5
+2025-07-25 01:20:11,Springvale,BP Springvale,3171,169.9
+2025-07-25 01:20:11,Springvale,Caltex Springvale,3171,167.9
+2025-07-25 01:20:11,Springvale,U-GO Springvale,3171,157.5
+2025-07-25 01:20:11,Springvale,EG Ampol Springvale,3171,169.9
+2025-07-25 01:20:11,Noble Park,United Noble Park,3174,157.9
+2025-07-25 01:20:11,Noble Park,Shell Noble Park,3174,164.9
+2025-07-25 01:20:11,Noble Park,EG Ampol Noble Park,3174,165.9
+2025-07-25 01:20:11,Waverley Gardens,7-Eleven Waverley Gardens,3170,169.9
+2025-07-25 01:20:11,Noble Park North,Jacksons Road Service Station,3174,165.6
+2025-07-25 01:20:11,Mulgrave,Coles Express Mulgrave,3170,169.9
+2025-07-25 01:20:11,Mulgrave,BP Mulgrave,3170,166.9
+2025-07-25 01:20:11,Glen Waverley,Coles Express Glen Waverley,3150,166.9
+2025-07-25 01:20:11,Brandon Park,7-Eleven Brandon Park,3750,166.9
+2025-07-25 01:20:11,Brandon Park,Coles Express Brandon Park,3150,166.9
+2025-07-25 01:20:11,Glen Waverley,7-Eleven Glen Waverley,3150,166.9
+2025-07-25 01:20:11,Wheelers Hill,EG Ampol Wheelers Hill,3150,166.9
+2025-07-25 01:20:11,Mount Waverley,Coles Express Mount Waverley,3149,167.9
+2025-07-25 01:20:11,Burwood,Better Choice Burwood,3125,167.5
+2025-07-25 01:20:11,Mount Waverley,Ampol Mount Waverley,3149,167.7
+2025-07-25 01:20:11,Burwood,United Burwood (Distributor),3125,169.9
+2025-07-25 01:20:11,Syndal,BP Tally Ho,3149,169.9
+2025-07-25 01:20:11,Burwood East,EG Ampol Burwood East,3151,167.9
+2025-07-25 01:20:11,Blackburn South,Astron Blackburn South,3130,169.9
+2025-07-25 01:20:11,Box Hill,7-Eleven Box Hill,3128,173.9
+2025-07-25 01:20:11,Box Hill,BP Box Hill South,3128,169.9
+2025-07-25 01:20:11,Box Hill,United Box Hill,3128,175.7
+2025-07-25 01:20:11,Blackburn South,7-Eleven Blackburn South,3130,173.9
+2025-07-25 01:20:11,Blackburn,Coles Express Blackburn,3130,173.9
+2025-07-25 01:20:11,Blackburn,Coles Express Blackburn North,3130,173.9
+2025-07-25 01:20:11,Glen Waverley,EG Ampol Glen Waverley,3150,166.9
+2025-07-25 01:20:11,Glen Waverley,Ampol Glen Waverley,3150,167.9
+2025-07-25 01:20:11,Burwood East,BP Burwood East,3151,169.9
+2025-07-25 01:20:11,Vermont South,BP Vermont South,3133,175.9
+2025-07-25 01:20:11,Nunawading,7-Eleven Nunawading,3131,173.9
+2025-07-25 01:20:11,Forest Hill,Coles Express Forest Hill,3131,173.9
+2025-07-25 01:20:11,Glen Waverley,The Corner Servo,3150,172.9
+2025-07-25 01:20:11,Vermont South,Coles Express Vermont South SC,3133,169.9
+2025-07-25 01:20:11,Vermont South,Coles Express Vermont South,3133,169.9
+2025-07-25 01:20:11,Forest Hill,EG Ampol Forest Hill,3131,173.9
+2025-07-25 01:20:11,Forest Hill,Coles Express Forest Hill Chase,3131,173.9
+2025-07-25 01:20:11,Blackburn,BP Blackburn,3130,175.9
+2025-07-25 01:20:11,Blackburn North,7-Eleven Blackburn,3130,173.9
+2025-07-25 01:20:11,Blackburn North,EG Ampol Blackburn North,3130,173.9
+2025-07-25 01:20:11,Nunawading,Coles Express Nunawading,3131,169.9
+2025-07-25 01:20:11,Vermont,BP Rooksby,3133,172.9
+2025-07-25 01:20:11,Mitcham,Astron Mitcham,3132,168.9
+2025-07-25 01:20:11,Donvale,7-Eleven Donvale,3111,169.9
+2025-07-25 01:20:11,Mitcham,BP Mitcham,3132,169.9
+2025-07-25 01:20:11,Mitcham,United Mitcham,3132,169.9
+2025-07-25 01:20:11,Fairfield,BP Fairfield,3078,169.9
+2025-07-25 01:20:11,Fairfield,Metco Fairfield,3078,163.5
+2025-07-25 01:20:11,Alphington,Shell OTR Alphington,3078,169.9
+2025-07-25 01:20:11,Fairfield,7-Eleven Fairfield East,3078,169.9
+2025-07-25 01:20:11,Thornbury,Shell Thornbury,3071,163.9
+2025-07-25 01:20:11,Ivanhoe,Ivanhoe Fuel,3079,179.9
+2025-07-25 01:20:11,West Heidelberg,BP Heidelberg West,3081,165.9
+2025-07-25 01:20:11,Heidelberg Heights,Dayef Petroleum,3081,174.7
+2025-07-25 01:20:11,Preston,United Preston South,3072,162.7
+2025-07-25 01:20:11,Preston,Caltex Preston,3072,163.9
+2025-07-25 01:20:11,Preston,United Preston,3072,162.7
+2025-07-25 01:20:11,Preston,Coles Express East Preston,3072,169.9
+2025-07-25 01:20:11,Preston,Pearl Preston,3072,162.9
+2025-07-25 01:20:11,Reservoir,BP Reservoir,3073,169.9
+2025-07-25 01:20:11,Kingsbury,BP Kingsbury,3083,169.9
+2025-07-25 01:20:11,Kingsbury,OOM Energy Kingsbury,3083,167.9
+2025-07-25 01:20:11,Kingsbury,Ampol Kingsbury,3083,169.9
+2025-07-25 01:20:11,Bundoora,BP Bundoora,3083,169.9
+2025-07-25 01:20:11,Heidelberg,7-Eleven Heidelberg,3084,171.9
+2025-07-25 01:20:11,Bulleen,United Bulleen,3105,169.7
+2025-07-25 01:20:11,Bulleen,EG Ampol Bulleen,3105,167.9
+2025-07-25 01:20:11,Bulleen,Coles Express Bulleen,3105,167.9
+2025-07-25 01:20:11,Rosanna,Coles Express Rosanna,3084,171.9
+2025-07-25 01:20:11,Watsonia,BP 2GO Watsonia,3087,176.9
+2025-07-25 01:20:11,Yallambie,7-Eleven Yallambie,3085,172.5
+2025-07-25 01:20:11,Greensborough,BP Greenleigh,3088,175.9
+2025-07-25 01:20:11,Greensborough,Coles Express Greensborough,3088,172.9
+2025-07-25 01:20:11,Templestowe Lower,EG Ampol Lower Templestowe,3107,167.9
+2025-07-25 01:20:11,Lower Templestowe,Coles Express Koonung,3107,167.9
+2025-07-25 01:20:11,Doncaster,Coles Express Doncaster,3108,169.9
+2025-07-25 01:20:11,Templestowe Lower,BP Templestowe,3107,167.9
+2025-07-25 01:20:11,Doncaster East,BP Doncaster,3109,169.9
+2025-07-25 01:20:11,Templestowe,7-Eleven Templestowe,3106,167.9
+2025-07-25 01:20:11,Templestowe,Coles Express Templestowe,3106,167.9
+2025-07-25 01:20:11,Montmorency,BP Montmorency,3094,169.3
+2025-07-25 01:20:11,Eltham,EG Ampol Eltham,3095,171.9
+2025-07-25 01:20:11,Eltham,Coles Express Eltham,3095,171.9
+2025-07-25 01:20:11,Eltham,7-Eleven Eltham,3095,173.9
+2025-07-25 01:20:11,Montmorency,Ampol Montmorency,3094,176.9
+2025-07-25 01:20:11,Eltham,United Eltham,3095,173.9
+2025-07-25 01:20:11,Doncaster East,EG Ampol Doncaster East,3109,169.9
+2025-07-25 01:20:11,Doncaster East,Metro Doncaster East,3109,164.9
+2025-07-25 01:20:11,Doncaster East,Coles Express Doncaster East,3109,169.9
+2025-07-25 01:20:11,Doncaster East,United Doncaster East,3109,167.9
+2025-07-25 01:20:11,Eltham,BP Connect Eltham,3095,173.9
+2025-07-25 01:20:11,Research,7-Eleven Research,3095,171.9
+2025-07-25 01:20:11,Vermont,7-Eleven Vermont,3133,172.9
