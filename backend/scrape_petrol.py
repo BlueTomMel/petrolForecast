@@ -9,7 +9,8 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import csv
-import datetime 
+import datetime
+import sqlite3
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -69,10 +70,35 @@ def scrape_petrol_prices():
         print("No petrol data found in API response.")
         return
 
-    df = pd.DataFrame(petrol_data)
-    csv_path = 'backend/data/history.csv'
-    df.to_csv(csv_path, index=False, mode='a', header=not pd.io.common.file_exists(csv_path))
-    print(f"Saved {len(petrol_data)} records to {csv_path}")
+    # Store data in SQLite database
+    db_path = 'backend/data/history.db'
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+    # Create table if not exists
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS petrol_prices (
+            postcode TEXT,
+            suburb TEXT,
+            station TEXT,
+            date TEXT,
+            price REAL
+        )
+    ''')
+    # Insert records
+    for record in petrol_data:
+        c.execute('''
+            INSERT INTO petrol_prices (postcode, suburb, station, date, price)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (
+            record['postcode'],
+            record['suburb'],
+            record['station'],
+            record['date'],
+            record['price']
+        ))
+    conn.commit()
+    conn.close()
+    print(f"Saved {len(petrol_data)} records to {db_path}")
 
 if __name__ == "__main__":
     scrape_petrol_prices()
