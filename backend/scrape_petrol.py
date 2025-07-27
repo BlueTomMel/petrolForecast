@@ -70,11 +70,10 @@ def scrape_petrol_prices():
     ]
 
     petrol_data = []
-    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    all_stations = []
 
     for city in cities:
         total_city_stations = 0
-        all_city_stations = []
         for api_url in city['api_urls']:
             print(f"Fetching data for {city['name']} from {api_url} ...")
             response = requests.get(api_url)
@@ -85,32 +84,55 @@ def scrape_petrol_prices():
             message = data.get('message', {})
             stations = message.get('list', [])
             total_city_stations += len(stations)
-            all_city_stations.extend(stations)
+            all_stations.extend(stations)
             print(f"[DEBUG] {city['name']} API ({api_url}) returned {len(stations)} stations.")
             if stations:
                 print(f"[DEBUG] Sample {city['name']} station: {stations[0]}")
         print(f"[DEBUG] {city['name']} total stations from all boxes: {total_city_stations}")
-        for station in all_city_stations:
-            suburb = station.get('suburb')
-            name = station.get('name')
-            postcode = station.get('postCode')
-            price = None
-            prices = station.get('prices', {})
-            if 'U91' in prices and 'amount' in prices['U91']:
-                price = prices['U91']['amount']
-            elif prices:
-                for v in prices.values():
-                    if 'amount' in v:
-                        price = v['amount']
-                        break
-            if suburb and name and price and postcode:
-                petrol_data.append({
-                    'date': now,
-                    'suburb': suburb,
-                    'station': name,
-                    'postcode': postcode,
-                    'price': price
-                })
+
+    for station in all_stations:
+        suburb = station.get('suburb')
+        name = station.get('name')
+        address = station.get('address')
+        postcode = station.get('postCode')
+        price = None
+        date = None
+        lat = None
+        lng = None
+        # Extract lat/lng if available
+        location = station.get('location')
+        if location and isinstance(location, dict):
+            lng = location.get('x')
+            lat = location.get('y')
+        prices = station.get('prices', {})
+        # Prefer U91, else any available price
+        if 'U91' in prices and 'amount' in prices['U91']:
+            price = prices['U91']['amount']
+            updated_ts = prices['U91'].get('updated')
+        elif prices:
+            for v in prices.values():
+                if 'amount' in v:
+                    price = v['amount']
+                    updated_ts = v.get('updated')
+                    break
+        else:
+            updated_ts = None
+        # Convert updated_ts (ms since epoch) to readable date/time
+        if updated_ts:
+            date = datetime.datetime.fromtimestamp(updated_ts / 1000).strftime('%Y-%m-%d %H:%M:%S')
+        else:
+            date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if suburb and name and address and price and postcode:
+            petrol_data.append({
+                'date': date,
+                'suburb': suburb,
+                'station': name,
+                'address': address,
+                'postcode': postcode,
+                'price': price,
+                'lat': lat,
+                'lng': lng
+            })
 
     if not petrol_data:
         print("No petrol data found in API responses.")
@@ -120,12 +142,15 @@ def scrape_petrol_prices():
     db_path = 'backend/data/history.db'
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    # Create table if not exists
+    # Create table if not exists (add address, lat, lng columns)
     c.execute('''
         CREATE TABLE IF NOT EXISTS petrol_prices (
             postcode TEXT,
             suburb TEXT,
             station TEXT,
+            address TEXT,
+            lat REAL,
+            lng REAL,
             date TEXT,
             price REAL
         )
@@ -133,12 +158,15 @@ def scrape_petrol_prices():
     # Insert records
     for record in petrol_data:
         c.execute('''
-            INSERT INTO petrol_prices (postcode, suburb, station, date, price)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO petrol_prices (postcode, suburb, station, address, lat, lng, date, price)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             record['postcode'],
             record['suburb'],
             record['station'],
+            record['address'],
+            record['lat'],
+            record['lng'],
             record['date'],
             record['price']
         ))
