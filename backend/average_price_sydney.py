@@ -7,7 +7,7 @@ def average_price_sydney():
     query = '''
         SELECT AVG(price)
         FROM petrol_prices
-        WHERE postcode LIKE '5%' AND suburb IS NOT NULL AND price IS NOT NULL
+        WHERE postcode LIKE '2%' AND suburb IS NOT NULL AND price IS NOT NULL
     '''
     avg_price = c.execute(query).fetchone()[0]
     conn.close()

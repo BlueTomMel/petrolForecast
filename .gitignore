@@ -9,3 +9,5 @@ venv/
 *.sqlite3
 *.log
 .history.csv
+
+.venv/

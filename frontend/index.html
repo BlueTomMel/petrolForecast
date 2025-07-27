@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petrol Price Search</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Petrol Price Search</h1>
+        <div class="search-bar">
+            <input id="suburb-input" type="text" placeholder="Please enter the suburb here">
+            <button id="range-search">Search</button>
+            <button id="toggle-advanced">More options</button>
+        </div>
+        <div id="advanced-options" style="display:none;">
+            <label for="distance-input">Distance (km):</label>
+            <input id="distance-input" type="number" min="1" max="50" value="5">
+            <label for="order-by">Order by:</label>
+            <select id="order-by">
+                <option value="price">Price</option>
+                <option value="distance">Distance</option>
+            </select>
+        </div>
+        <div id="price-table-container"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
