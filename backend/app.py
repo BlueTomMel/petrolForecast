@@ -56,16 +56,24 @@ def stations_in_range():
         try:
             dist = haversine(lat, lng, station_lat, station_lng)
             if dist <= max_dist:
-                gmaps_url = f"https://www.google.com/maps/dir/?api=1&origin={station_lat},{station_lng}&destination={lat},{lng}"
+                # Swap start and destination: user's location is origin, station is destination
+                gmaps_url = f"https://www.google.com/maps/dir/?api=1&origin={lat},{lng}&destination={station_lat},{station_lng}"
                 record = dict(zip(columns, row))
                 record['distance_km'] = round(dist, 2)
                 record['gmaps_url'] = gmaps_url
                 results.append(record)
         except Exception:
             continue
-    results.sort(key=lambda x: x['distance_km'])
+    # Deduplicate by station+address+date
+    dedup_map = {}
+    for r in results:
+        key = f"{r['station']}|{r['address']}|{r['postcode']}|{r['date']}"
+        if key not in dedup_map:
+            dedup_map[key] = r
+    dedup_results = list(dedup_map.values())
+    dedup_results.sort(key=lambda x: x['distance_km'])
     conn.close()
-    return jsonify(results)
+    return jsonify(dedup_results)
 
 @app.route('/')
 def serve_index():
