@@ -35,7 +35,17 @@ def stations_in_range():
         return jsonify({'error': 'Missing suburb or distance'}), 400
     lat, lng = geocode(suburb)
     if lat is None or lng is None:
-        return jsonify({'error': f'Could not geocode suburb: {suburb}'}), 400
+        # Try to suggest a similar suburb using Nominatim
+        url = f"https://nominatim.openstreetmap.org/search?format=json&q={suburb}, Australia"
+        try:
+            resp = requests.get(url, headers={'User-Agent': 'petrol-forecast-bot'})
+            data = resp.json()
+            if data:
+                suggestion = data[0]['display_name'].split(',')[0]
+                return jsonify({'error': f'Could not geocode suburb: {suburb}', 'suggestion': suggestion}), 200
+        except Exception:
+            pass
+        return jsonify({'error': f'Could not geocode suburb: {suburb}'}), 200
     DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'history.db')
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
