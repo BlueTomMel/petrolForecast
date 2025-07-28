@@ -100,20 +100,50 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         let html = '<table><thead><tr>' +
-            '<th>Postcode</th><th>Suburb</th><th>Station</th><th>Address</th><th>Date</th><th>Price</th><th>Distance (km)</th><th>Map</th>' +
+            '<th>Postcode</th><th>Suburb</th><th>Station</th><th>Address</th><th>Date</th><th>Price</th><th>Changes</th><th>Distance (km)</th><th>Map</th>' +
             '</tr></thead><tbody>';
-        rows.forEach((row, idx) => {
-            html += `<tr>` +
-                `<td>${row.postcode}</td>` +
-                `<td>${row.suburb}</td>` +
-                `<td>${row.station}</td>` +
-                `<td>${row.address || ''}</td>` +
-                `<td>${row.date}</td>` +
-                `<td>${row.price}</td>` +
-                `<td>${row.distance_km !== undefined ? row.distance_km.toFixed(2) : ''}</td>` +
-                `<td><a href="${row.gmaps_url}" target="_blank">Map</a></td>` +
-            `</tr>`;
+        // Group rows by station+address+postcode and sort by date descending
+        const stationMap = new Map();
+        rows.forEach(row => {
+            const key = row.station + '|' + (row.address || '') + '|' + row.postcode;
+            if (!stationMap.has(key)) {
+                stationMap.set(key, []);
+            }
+            stationMap.get(key).push(row);
         });
+        // Sort each station's rows by date descending (latest first)
+        for (const stationRows of stationMap.values()) {
+            stationRows.sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+        // For each station, show only the latest and 2nd latest price, and their difference
+        for (const [key, stationRows] of stationMap.entries()) {
+            // Sort by date descending
+            stationRows.sort((a, b) => new Date(b.date) - new Date(a.date));
+            const latest = stationRows[0];
+            let changeHtml = '<span>-</span>';
+            if (latest.changes) {
+                if (latest.changes.startsWith('+')) {
+                    changeHtml = `<span class="price-change-pos">${latest.changes}</span>`;
+                } else if (latest.changes.startsWith('-')) {
+                    changeHtml = `<span class="price-change-neg">${latest.changes}</span>`;
+                } else if (latest.changes === '0C') {
+                    changeHtml = `<span style="color:black;display:inline-block;width:2em;text-align:center;">-</span>`;
+                } else {
+                    changeHtml = `<span>${latest.changes}</span>`;
+                }
+            }
+            html += `<tr>` +
+                `<td>${latest.postcode}</td>` +
+                `<td>${latest.suburb}</td>` +
+                `<td>${latest.station}</td>` +
+                `<td>${latest.address || ''}</td>` +
+                `<td>${latest.date}</td>` +
+                `<td>${latest.price}</td>` +
+                `<td>${changeHtml}</td>` +
+                `<td>${latest.distance_km !== undefined ? latest.distance_km.toFixed(2) : ''}</td>` +
+                `<td><a href="${latest.gmaps_url}" target="_blank">Map</a></td>` +
+            `</tr>`;
+        }
         html += '</tbody></table>';
         container.innerHTML = html;
     }

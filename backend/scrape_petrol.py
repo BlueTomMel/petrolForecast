@@ -142,7 +142,7 @@ def scrape_petrol_prices():
     db_path = 'backend/data/history.db'
     conn = sqlite3.connect(db_path)
     c = conn.cursor()
-    # Create table if not exists (add address, lat, lng columns)
+    # Create table if not exists (add address, lat, lng, changes columns)
     c.execute('''
         CREATE TABLE IF NOT EXISTS petrol_prices (
             postcode TEXT,
@@ -152,14 +152,38 @@ def scrape_petrol_prices():
             lat REAL,
             lng REAL,
             date TEXT,
-            price REAL
+            price REAL,
+            changes TEXT
         )
     ''')
-    # Insert records
+    # Add changes column if not exists
+    try:
+        c.execute("ALTER TABLE petrol_prices ADD COLUMN changes TEXT;")
+    except sqlite3.OperationalError:
+        pass  # Column already exists
+    # Insert records with changes
     for record in petrol_data:
+        # Find previous price for this station/address/postcode
+        c.execute("SELECT price FROM petrol_prices WHERE station=? AND address=? AND postcode=? ORDER BY date DESC LIMIT 1", (record['station'], record['address'], record['postcode']))
+        row = c.fetchone()
+        if row and row[0] is not None:
+            try:
+                prev_price = float(row[0])
+                curr_price = float(record['price'])
+                diff_cents = round(curr_price - prev_price)
+                if diff_cents > 0:
+                    changes = f"+{diff_cents}C"
+                elif diff_cents < 0:
+                    changes = f"{diff_cents}C"
+                else:
+                    changes = "0C"
+            except (ValueError, TypeError):
+                changes = "-"
+        else:
+            changes = "-"
         c.execute('''
-            INSERT INTO petrol_prices (postcode, suburb, station, address, lat, lng, date, price)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO petrol_prices (postcode, suburb, station, address, lat, lng, date, price, changes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             record['postcode'],
             record['suburb'],
@@ -168,7 +192,8 @@ def scrape_petrol_prices():
             record['lat'],
             record['lng'],
             record['date'],
-            record['price']
+            record['price'],
+            changes
         ))
     conn.commit()
     conn.close()
