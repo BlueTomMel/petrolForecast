@@ -3,16 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Petrol Price Search</title>
+    <title>Petrol Price</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Petrol Price Search</h1>
-        <div class="search-bar">
-            <input id="suburb-input" type="text" placeholder="Please enter the suburb here">
-            <button id="range-search">Search</button>
-            <button id="toggle-advanced">More options</button>
+        <h1 style="font-family: 'Arial', sans-serif; font-size: 3em; text-align: center; margin-bottom: 1em;">
+            <span style="color: #4285F4;">P</span>
+            <span style="color: #EA4335;">e</span>
+            <span style="color: #FBBC05;">t</span>
+            <span style="color: #34A853;">r</span>
+            <span style="color: #EA4335;">o</span>
+            <span style="color: #4285F4;">l</span>
+            <span style="color: #FBBC05;"> </span>
+            <span style="color: #34A853;">P</span>
+            <span style="color: #EA4335;">r</span>
+            <span style="color: #FBBC05;">i</span>
+            <span style="color: #34A853;">c</span>
+            <span style="color: #EA4335;">e</span>
+        </h1>
+        <div class="search-bar" style="position: relative;">
+            <div style="position: relative; width: 100%; max-width: 400px;">
+                <input id="suburb-input" type="text" placeholder="Enter suburb" style="width: 100%; padding-right: 48px;" />
+                <span id="toggle-advanced" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; display: flex; align-items: center; padding: 0; height: 100%;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#888" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="6" r="2" />
+                        <circle cx="12" cy="12" r="2" />
+                        <circle cx="12" cy="18" r="2" />
+                    </svg>
+                </span>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 1em; margin-top: 1em;">
+            <button id="range-search" style="background: red;">Search</button>
+            <button id="forecast" style="background: blue;">Forecast</button>
         </div>
         <div id="advanced-options" style="display:none;">
             <label for="distance-input">Distance (km):</label>
@@ -24,6 +48,7 @@
             </select>
         </div>
         <div id="price-table-container"></div>
+        <div id="searching-message" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.5em; color: #333;">Searching...</div>
     </div>
     <script src="script.js"></script>
 </body>
