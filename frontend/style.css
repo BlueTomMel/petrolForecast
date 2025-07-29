@@ -39,7 +39,7 @@ h1 span {
 button {
     padding: 0.7em 1.2em;
     border: none;
-    border-radius: 8px;
+    border-radius: 24px; /* More rounded corners */
     color: #fff;
     font-size: 1em;
     cursor: pointer;
