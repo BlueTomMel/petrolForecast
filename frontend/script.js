@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const advancedOptions = document.getElementById('advanced-options');
     let distanceInput = null;
     let orderBySelect = null;
+    let brandSelect = null;
     let lastSuburbSearched = '';
 
     // Remove placeholder on focus, restore if empty on blur
@@ -27,8 +28,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (advancedOptions.style.display !== 'none') {
             distanceInput = document.getElementById('distance-input');
             orderBySelect = document.getElementById('order-by');
+            brandSelect = document.getElementById('brand-select');
             distance = parseFloat(distanceInput.value);
             orderBy = orderBySelect.value;
+            // Get selected brands as array
+            let selectedBrands = Array.from(brandSelect.selectedOptions).map(opt => opt.value);
             if (!suburb || isNaN(distance) || distance <= 0) {
                 container.innerHTML = '<p>Please enter a valid suburb and distance.</p>';
                 container.style.display = '';
@@ -80,6 +84,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             let dedupRows = Array.from(dedupMap.values());
+            // Filter by selected brands if any selected
+            if (advancedOptions.style.display !== 'none' && brandSelect && brandSelect.selectedOptions.length > 0) {
+                let selectedBrands = Array.from(brandSelect.selectedOptions).map(opt => opt.value.toLowerCase());
+                dedupRows = dedupRows.filter(row => {
+                    if (!row.station) return false;
+                    return selectedBrands.some(brand => row.station.toLowerCase().includes(brand));
+                });
+            }
             // Sort rows by selected order
             if (orderBy === 'price') {
                 dedupRows.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
@@ -162,12 +174,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add listeners when shown
             distanceInput = document.getElementById('distance-input');
             orderBySelect = document.getElementById('order-by');
+            brandSelect = document.getElementById('brand-select');
             distanceInput.addEventListener('keyup', function(e) {
                 if (e.key === 'Enter') {
                     button.click();
                 }
             });
             orderBySelect.addEventListener('change', function() {
+                button.click();
+            });
+            brandSelect.addEventListener('change', function() {
                 button.click();
             });
         } else {
