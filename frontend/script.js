@@ -181,10 +181,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             orderBySelect.addEventListener('change', function() {
-                button.click();
+                // Do not trigger search automatically on order-by change
             });
             brandSelect.addEventListener('change', function() {
-                button.click();
+                // Do not trigger search automatically on brand selection change
             });
         } else {
             advancedOptions.style.display = 'none';
