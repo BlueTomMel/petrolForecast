@@ -89,12 +89,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             let dedupRows = Array.from(dedupMap.values());
             // Filter by selected brands if any selected
-            if (advancedOptions.style.display !== 'none' && brandSelect && brandSelect.selectedOptions.length > 0) {
-                let selectedBrands = Array.from(brandSelect.selectedOptions).map(opt => opt.value.toLowerCase());
-                dedupRows = dedupRows.filter(row => {
-                    if (!row.station) return false;
-                    return selectedBrands.some(brand => row.station.toLowerCase().includes(brand));
-                });
+            if (advancedOptions.style.display !== 'none' && brandSelect) {
+                const selectedBrands = Array.from(brandSelect.querySelectorAll('input[type=checkbox]:checked')).map(checkbox => checkbox.value.toLowerCase());
+                if (selectedBrands.length > 0) {
+                    dedupRows = dedupRows.filter(row => {
+                        if (!row.station) return false;
+                        return selectedBrands.some(brand => row.station.toLowerCase().includes(brand));
+                    });
+                }
             }
             // Sort rows by selected order
             if (orderBy === 'price') {
@@ -223,4 +225,31 @@ document.addEventListener('DOMContentLoaded', function() {
             advancedOptions.style.display = 'none';
         }
     });
+
+    // Replace the brand checkboxes with reordered brands
+    brandSelect = document.getElementById('brand-select');
+    if (brandSelect) {
+        const prioritizedBrands = ['BP', 'Shell', 'Coles Express', 'Ampol', 'Caltex', '7-Eleven', 'Mobil', 'Costco', 'United'];
+        const otherBrands = ['7Star Service Station', 'Apex Petroleum', 'Astron', 'Atlas Fuel', 'Budget', 'Burk', 'FastFuel', 'Freedom Fuels', 'Liberty', 'Matilda', 'Medco Petroleum', 'Metro Petroleum', 'On The Run (OTR)', 'Pacific Petroleum', 'Pearl Energy', 'Peak Petroleum', 'Power Fuel', 'Reddy Express', 'Solo', 'Speedway', 'U-GO', 'Vibe', 'Westside Petroleum'];
+        const allBrands = [...prioritizedBrands, ...otherBrands];
+
+        brandSelect.innerHTML = ''; // Clear existing options
+        brandSelect.style.overflowY = 'auto'; // Enable scrolling
+        brandSelect.style.height = '5em'; // Limit height to display approximately 2.5 options
+
+        allBrands.forEach(brand => {
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = brand;
+            checkbox.id = `brand-${brand.replace(/\s+/g, '-').toLowerCase()}`;
+            const label = document.createElement('label');
+            label.htmlFor = checkbox.id;
+            label.textContent = brand;
+            const wrapper = document.createElement('div');
+            wrapper.style.marginBottom = '5px';
+            wrapper.appendChild(checkbox);
+            wrapper.appendChild(label);
+            brandSelect.appendChild(wrapper);
+        });
+    }
 });
