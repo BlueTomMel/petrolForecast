@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let distanceInput = null;
     let orderBySelect = null;
     let brandSelect = null;
+    let displayInfoSelect = null;
     let lastSuburbSearched = '';
 
     // Remove placeholder on focus, restore if empty on blur
@@ -25,14 +26,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get advanced options only if visible
         let distance = 5;
         let orderBy = 'price';
+        let displayMode = 'simple';
         if (advancedOptions.style.display !== 'none') {
             distanceInput = document.getElementById('distance-input');
             orderBySelect = document.getElementById('order-by');
             brandSelect = document.getElementById('brand-select');
+            displayInfoSelect = document.getElementById('display-info');
             distance = parseFloat(distanceInput.value);
             orderBy = orderBySelect.value;
+            displayMode = displayInfoSelect ? displayInfoSelect.value : 'simple';
             // Get selected brands as array
-            let selectedBrands = Array.from(brandSelect.selectedOptions).map(opt => opt.value);
+            let selectedBrands = Array.from(brandSelect.selectedOptions || []).map(opt => opt.value);
             if (!suburb || isNaN(distance) || distance <= 0) {
                 container.innerHTML = '<p>Please enter a valid suburb and distance.</p>';
                 container.style.display = '';
@@ -111,9 +115,18 @@ document.addEventListener('DOMContentLoaded', function() {
             container.innerHTML = '<p>No results found.</p>';
             return;
         }
-        let html = '<table><thead><tr>' +
-            '<th>Postcode</th><th>Suburb</th><th>Station</th><th>Address</th><th>Date</th><th>Price</th><th>Changes</th><th>Distance (km)</th><th>Map</th>' +
-            '</tr></thead><tbody>';
+        let displayMode = 'simple';
+        if (advancedOptions.style.display !== 'none') {
+            displayInfoSelect = document.getElementById('display-info');
+            displayMode = displayInfoSelect ? displayInfoSelect.value : 'simple';
+        }
+        let html = '<table><thead><tr>';
+        if (displayMode === 'simple') {
+            html += '<th>Station</th><th>Address</th><th>Price</th><th>Changes</th><th>Direct Distance</th>';
+        } else {
+            html += '<th>Postcode</th><th>Suburb</th><th>Station</th><th>Address</th><th>Date</th><th>Price</th><th>Changes</th><th>Distance (km)</th><th>Map</th>';
+        }
+        html += '</tr></thead><tbody>';
         // Group rows by station+address+postcode and sort by date descending
         const stationMap = new Map();
         rows.forEach(row => {
@@ -144,17 +157,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     changeHtml = `<span>${latest.changes}</span>`;
                 }
             }
-            html += `<tr>` +
-                `<td>${latest.postcode}</td>` +
-                `<td>${latest.suburb}</td>` +
-                `<td>${latest.station}</td>` +
-                `<td>${latest.address || ''}</td>` +
-                `<td>${latest.date}</td>` +
-                `<td>${latest.price}</td>` +
-                `<td>${changeHtml}</td>` +
-                `<td>${latest.distance_km !== undefined ? latest.distance_km.toFixed(2) : ''}</td>` +
-                `<td><a href="${latest.gmaps_url}" target="_blank">Map</a></td>` +
-            `</tr>`;
+            if (displayMode === 'simple') {
+                // Build MapLink: distance + link to Google Maps from suburb center to station
+                let mapLink = '';
+                if (latest.distance_km !== undefined && latest.lat && latest.lng && latest.suburb_center_lat && latest.suburb_center_lng) {
+                    const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${latest.suburb_center_lat},${latest.suburb_center_lng}&destination=${latest.lat},${latest.lng}`;
+                    mapLink = `${latest.distance_km.toFixed(2)} km <a href="${gmapsUrl}" target="_blank" style="color:#4285f4;text-decoration:underline;">MapLink</a>`;
+                } else if (latest.gmaps_url && latest.distance_km !== undefined) {
+                    mapLink = `${latest.distance_km.toFixed(2)} km <a href="${latest.gmaps_url}" target="_blank" style="color:#4285f4;text-decoration:underline;">MapLink</a>`;
+                } else {
+                    mapLink = '-';
+                }
+                html += `<tr>` +
+                    `<td>${latest.station}</td>` +
+                    `<td>${latest.address || ''}</td>` +
+                    `<td>${latest.price}</td>` +
+                    `<td>${changeHtml}</td>` +
+                    `<td>${mapLink}</td>` +
+                `</tr>`;
+            } else {
+                html += `<tr>` +
+                    `<td>${latest.postcode}</td>` +
+                    `<td>${latest.suburb}</td>` +
+                    `<td>${latest.station}</td>` +
+                    `<td>${latest.address || ''}</td>` +
+                    `<td>${latest.date}</td>` +
+                    `<td>${latest.price}</td>` +
+                    `<td>${changeHtml}</td>` +
+                    `<td>${latest.distance_km !== undefined ? latest.distance_km.toFixed(2) : ''}</td>` +
+                    `<td><a href="${latest.gmaps_url}" target="_blank">Map</a></td>` +
+                `</tr>`;
+            }
         }
         html += '</tbody></table>';
         container.innerHTML = html;
