@@ -21,6 +21,7 @@ import datetime
 import sqlite3
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import os
 
 # Step 1: navigate to PetrolSpy Melbourne page URL: "https://petrolspy.com.au/map/latlng/-37.814107/144.96328"
 # Step 2: click this webelement <button id="list-view" class="button map-button map-control" style="z-index: 2147483647; float: right;"><div></div></button>
@@ -199,8 +200,32 @@ def scrape_petrol_prices():
     conn.close()
     print(f"Saved {len(petrol_data)} records to {db_path}")
 
+def save_graph_images():
+    # Define the URLs and filenames
+    graph_data = [
+        {"url": "https://petrolspy.com.au/graph/brisbane_U91E10.svg", "filename": "brisbane.svg"},
+        {"url": "https://petrolspy.com.au/graph/sydney_U91E10.svg", "filename": "sydney.svg"},
+        {"url": "https://petrolspy.com.au/graph/melbourne_U91E10.svg", "filename": "melbourne.svg"}
+    ]
+
+    # Ensure the graph folder exists
+    graph_folder = os.path.join(os.getcwd(), "graph")
+    os.makedirs(graph_folder, exist_ok=True)
+
+    for graph in graph_data:
+        response = requests.get(graph["url"], stream=True)
+        if response.status_code == 200:
+            file_path = os.path.join(graph_folder, graph["filename"])
+            with open(file_path, "wb") as file:
+                for chunk in response.iter_content(1024):
+                    file.write(chunk)
+            print(f"Saved: {file_path}")
+        else:
+            print(f"Failed to download: {graph['url']}")
+
 if __name__ == "__main__":
     scrape_petrol_prices()
+    save_graph_images()
 # This will run the scraping function when the script is executed
 # Ensure you have the necessary packages installed: selenium, webdriver_manager, pandas, beautifulsoup4
 # You may need to adjust the sleep times based on your internet speed and the website's loading time
