@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
             svgAlt = 'Brisbane Petrol Price Forecast';
         }
         container.innerHTML = `
-            <div style="width:100%;max-width:600px;margin:0 auto;display:flex;justify-content:center;align-items:center;">
+            <div style="width:100%;max-width:600px;margin:2.5em auto 0 auto;display:flex;justify-content:center;align-items:center;padding:1.5em 0 1em 0;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                 <img src="${svgFile}" alt="${svgAlt}" style="width:100%;height:auto;max-width:600px;display:block;" />
             </div>
         `;
