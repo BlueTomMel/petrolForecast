@@ -1,5 +1,79 @@
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('price-table-container');
+    const forecastButton = document.getElementById('forecast');
+    // Forecast button: show error if empty, else show correct SVG by state
+    forecastButton.addEventListener('click', async function() {
+        const suburb = suburbInput.value.trim();
+        // Hide advanced options and clear filters
+        advancedOptions.style.display = 'none';
+        if (brandSelect) {
+            const checkboxes = brandSelect.querySelectorAll('input[type=checkbox]');
+            checkboxes.forEach(cb => { cb.checked = false; });
+        }
+        if (distanceInput) distanceInput.value = 5;
+        if (orderBySelect) orderBySelect.value = 'price';
+        if (displayInfoSelect) displayInfoSelect.value = 'simple';
+        // If empty, show error
+        if (!suburb) {
+            container.style.display = '';
+            container.innerHTML = `<div style="background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;">Please enter the suburb</div>`;
+            return;
+        }
+        // Geocode suburb to determine state
+        container.style.display = '';
+        container.innerHTML = '<p style="text-align:center;font-size:1.1em;color:#888;">Checking suburb...</p>';
+        let state = null;
+        try {
+            const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(suburb + ', Australia')}`);
+            const geoResults = await geoResp.json();
+            if (geoResults.length > 0) {
+                // Try to extract state from display_name or address
+                const best = geoResults[0];
+                let stateName = '';
+                if (best.address && best.address.state) {
+                    stateName = best.address.state.toLowerCase();
+                } else if (best.display_name) {
+                    // Fallback: parse state from display_name
+                    const parts = best.display_name.split(',').map(s => s.trim().toLowerCase());
+                    const knownStates = ['victoria', 'new south wales', 'queensland'];
+                    stateName = parts.find(p => knownStates.includes(p)) || '';
+                }
+                if (stateName.includes('victoria')) {
+                    state = 'melbourne';
+                } else if (stateName.includes('new south wales')) {
+                    state = 'sydney';
+                } else if (stateName.includes('queensland')) {
+                    state = 'brisbane';
+                }
+            }
+        } catch (e) {
+            // If geocoding fails, show error
+            container.innerHTML = `<div style="background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;">Could not determine suburb location. Please try again.</div>`;
+            return;
+        }
+        if (!state) {
+            container.innerHTML = `<div style="background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;">Suburb not found or not in VIC/NSW/QLD.</div>`;
+            return;
+        }
+        // Show correct SVG
+        let svgFile = '';
+        let svgAlt = '';
+        if (state === 'melbourne') {
+            svgFile = 'graph/melbourne.svg';
+            svgAlt = 'Melbourne Petrol Price Forecast';
+        } else if (state === 'sydney') {
+            svgFile = 'graph/sydney.svg';
+            svgAlt = 'Sydney Petrol Price Forecast';
+        } else if (state === 'brisbane') {
+            svgFile = 'graph/brisbane.svg';
+            svgAlt = 'Brisbane Petrol Price Forecast';
+        }
+        container.innerHTML = `
+            <div style="width:100%;max-width:600px;margin:0 auto;display:flex;justify-content:center;align-items:center;">
+                <img src="${svgFile}" alt="${svgAlt}" style="width:100%;height:auto;max-width:600px;display:block;" />
+            </div>
+        `;
+    });
     container.style.display = 'none';
     const suburbInput = document.getElementById('suburb-input');
     const button = document.getElementById('range-search');
