@@ -162,7 +162,24 @@ def scrape_petrol_prices():
         c.execute("ALTER TABLE petrol_prices ADD COLUMN changes TEXT;")
     except sqlite3.OperationalError:
         pass  # Column already exists
-    # Insert records with changes
+
+    # Create latest_petrol_prices table (latest only)
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS latest_petrol_prices (
+            postcode TEXT,
+            suburb TEXT,
+            station TEXT,
+            address TEXT,
+            lat REAL,
+            lng REAL,
+            date TEXT,
+            price REAL,
+            changes TEXT,
+            PRIMARY KEY (station, address, postcode)
+        )
+    ''')
+
+    # Insert records with changes and upsert into latest_petrol_prices
     for record in petrol_data:
         # Find previous price for this station/address/postcode
         c.execute("SELECT price FROM petrol_prices WHERE station=? AND address=? AND postcode=? ORDER BY date DESC LIMIT 1", (record['station'], record['address'], record['postcode']))
@@ -182,6 +199,7 @@ def scrape_petrol_prices():
                 changes = "-"
         else:
             changes = "-"
+        # Insert into petrol_prices (history)
         c.execute('''
             INSERT INTO petrol_prices (postcode, suburb, station, address, lat, lng, date, price, changes)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -196,9 +214,33 @@ def scrape_petrol_prices():
             record['price'],
             changes
         ))
+        # Upsert into latest_petrol_prices (latest only)
+        c.execute('''
+            INSERT INTO latest_petrol_prices (postcode, suburb, station, address, lat, lng, date, price, changes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT(station, address, postcode) DO UPDATE SET
+                postcode=excluded.postcode,
+                suburb=excluded.suburb,
+                lat=excluded.lat,
+                lng=excluded.lng,
+                date=excluded.date,
+                price=excluded.price,
+                changes=excluded.changes
+            WHERE excluded.date > latest_petrol_prices.date
+        ''', (
+            record['postcode'],
+            record['suburb'],
+            record['station'],
+            record['address'],
+            record['lat'],
+            record['lng'],
+            record['date'],
+            record['price'],
+            changes
+        ))
     conn.commit()
     conn.close()
-    print(f"Saved {len(petrol_data)} records to {db_path}")
+    print(f"Saved {len(petrol_data)} records to {db_path} and updated latest_petrol_prices table.")
 
 def save_graph_images():
     # Define the URLs and filenames
