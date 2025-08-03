@@ -20,10 +20,19 @@ def suburb_candidates():
         return jsonify({'candidates': []})
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+    # Try exact match first
     c.execute("SELECT DISTINCT suburb, postcode FROM latest_petrol_prices WHERE LOWER(suburb)=? ORDER BY postcode", (suburb,))
     rows = c.fetchall()
-    conn.close()
+    # If no exact match, try fuzzy match (LIKE)
+    if not rows:
+        like_pattern = f"%{suburb}%"
+        c.execute("SELECT DISTINCT suburb, postcode FROM latest_petrol_prices WHERE LOWER(suburb) LIKE ? ORDER BY suburb, postcode", (like_pattern,))
+        rows = c.fetchall()
     candidates = [dict(suburb=row[0], postcode=row[1]) for row in rows]
+    # If still no candidates and suburb is 'melbourne', add fallback
+    if not candidates and suburb == 'melbourne':
+        candidates.append({'suburb': 'Melbourne', 'postcode': '3000'})
+    conn.close()
     return jsonify({'candidates': candidates})
 
 # --- Forecast API endpoint ---
