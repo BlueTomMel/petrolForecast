@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const forecastButton = document.getElementById('forecast');
     // Forecast button: show error if empty, else show correct SVG by state
     forecastButton.addEventListener('click', async function() {
-        const suburb = suburbInput.value.trim();
+        const suburbRaw = suburbInput.value.trim();
         // Hide advanced options and clear filters
         advancedOptions.style.display = 'none';
         if (brandSelect) {
@@ -50,17 +50,34 @@ document.addEventListener('DOMContentLoaded', function() {
         if (orderBySelect) orderBySelect.value = 'price';
         if (displayInfoSelect) displayInfoSelect.value = 'simple';
         // If empty, show error
-        if (!suburb) {
+        if (!suburbRaw) {
             container.style.display = '';
-            container.innerHTML = `<div style="background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;">Please enter the suburb</div>`;
+            container.innerHTML = `<div style=\"background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;\">Please enter the suburb</div>`;
             return;
         }
-        // Geocode suburb to determine state
+        // Always extract only the suburb name (before comma) for candidate lookup
+        let suburb = suburbRaw.split(',')[0].trim();
+        // Fetch suburb candidates from backend
+        const candidates = await fetchSuburbCandidates(suburb);
+        if (candidates.length === 0) {
+            container.innerHTML = `<p>No suburb found for: <b>${suburb}</b></p>`;
+            container.style.display = '';
+            return;
+        }
+        // Always show confirmation modal, even if only one candidate
+        let confirmedSuburb = null;
+        await new Promise(resolve => {
+            showSuburbModal(candidates, picked => {
+                confirmedSuburb = picked;
+                resolve();
+            });
+        });
+        // Now use confirmedSuburb.suburb and confirmedSuburb.postcode for forecast
         container.style.display = '';
         container.innerHTML = '<p style="text-align:center;font-size:1.1em;color:#888;">Checking suburb...</p>';
         let state = null;
         try {
-            const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(suburb + ', Australia')}`);
+            const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(confirmedSuburb.suburb + ' ' + confirmedSuburb.postcode + ', Australia')}`);
             const geoResults = await geoResp.json();
             if (geoResults.length > 0) {
                 // Try to extract state from display_name or address
@@ -83,12 +100,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         } catch (e) {
-            // If geocoding fails, show error
-            container.innerHTML = `<div style="background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;">Could not determine suburb location. Please try again.</div>`;
+            container.innerHTML = `<div style=\"background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;\">Could not determine suburb location. Please try again.</div>`;
             return;
         }
         if (!state) {
-            container.innerHTML = `<div style="background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;">Suburb not found or not in VIC/NSW/QLD.</div>`;
+            container.innerHTML = `<div style=\"background:#ffeaea;color:#b71c1c;padding:1.2em 1em;border-radius:8px;text-align:center;font-size:1.1em;font-weight:500;box-shadow:0 2px 8px #f8d7da;max-width:400px;margin:2em auto 0 auto;\">Suburb not found or not in VIC/NSW/QLD.</div>`;
             return;
         }
         // Show correct SVG
@@ -106,14 +122,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         // Show graph
         container.innerHTML = `
-            <div style="width:100%;max-width:600px;margin:2.5em auto 0 auto;display:flex;justify-content:center;align-items:center;padding:1.5em 0 1em 0;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
-                <img src="${svgFile}" alt="${svgAlt}" style="width:100%;height:auto;max-width:600px;display:block;" />
-            </div>
-            <div id="forecast-message" style="width:100%;max-width:600px;margin:1.5em auto 0 auto;display:flex;justify-content:center;align-items:center;"></div>
-        `;
+            <div style=\"width:100%;max-width:600px;margin:2.5em auto 0 auto;display:flex;justify-content:center;align-items:center;padding:1.5em 0 1em 0;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);\">\n                <img src=\"${svgFile}\" alt=\"${svgAlt}\" style=\"width:100%;height:auto;max-width:600px;display:block;\" />\n            </div>\n            <div id=\"forecast-message\" style=\"width:100%;max-width:600px;margin:1.5em auto 0 auto;display:flex;justify-content:center;align-items:center;\"></div>\n        `;
         // Fetch and display forecast message
         const forecastMsgDiv = document.getElementById('forecast-message');
-        forecastMsgDiv.innerHTML = '<span style="color:#888;font-size:1.1em;">Loading AI forecast...</span>';
+        forecastMsgDiv.innerHTML = '<span style=\"color:#888;font-size:1.1em;\">Loading AI forecast...</span>';
         try {
             const resp = await fetch(`/api/forecast?city=${encodeURIComponent(state)}`);
             if (resp.ok) {
@@ -121,17 +133,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data && data.forecast_text) {
                     let dateStr = '';
                     if (data.created_at) {
-                        dateStr = `<div style="margin-top:0.7em;font-size:0.93em;color:#888;text-align:right;">Generated: <span style="font-family:monospace">${data.created_at}</span></div>`;
+                        dateStr = `<div style=\"margin-top:0.7em;font-size:0.93em;color:#888;text-align:right;\">Generated: <span style=\"font-family:monospace\">${data.created_at}</span></div>`;
                     }
                     forecastMsgDiv.innerHTML = `<div style=\"background:#f5faff;border-radius:8px;padding:1.2em 1em;box-shadow:0 2px 8px #e3f2fd;font-size:1.08em;color:#1565c0;line-height:1.6;\"><b>AI Forecast for Next Week:</b><br>${data.forecast_text.replace(/\n/g,'<br>')}${dateStr}</div>`;
                 } else {
-                    forecastMsgDiv.innerHTML = '<span style="color:#b71c1c;">No forecast available at this time.</span>';
+                    forecastMsgDiv.innerHTML = '<span style=\"color:#b71c1c;\">No forecast available at this time.</span>';
                 }
             } else {
-                forecastMsgDiv.innerHTML = '<span style="color:#b71c1c;">Failed to fetch forecast.</span>';
+                forecastMsgDiv.innerHTML = '<span style=\"color:#b71c1c;\">Failed to fetch forecast.</span>';
             }
         } catch (e) {
-            forecastMsgDiv.innerHTML = '<span style="color:#b71c1c;">Error loading forecast.</span>';
+            forecastMsgDiv.innerHTML = '<span style=\"color:#b71c1c;\">Error loading forecast.</span>';
         }
     });
     container.style.display = 'none';
