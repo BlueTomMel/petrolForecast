@@ -28,10 +28,43 @@ def suburb_candidates():
         like_pattern = f"%{suburb}%"
         c.execute("SELECT DISTINCT suburb, postcode FROM latest_petrol_prices WHERE LOWER(suburb) LIKE ? ORDER BY suburb, postcode", (like_pattern,))
         rows = c.fetchall()
+    # Always include capital city + postcode as a candidate if search matches a major city
+    city_fallbacks = {
+        'melbourne': '3000',
+        'sydney': '2000',
+        'brisbane': '4000',
+        'adelaide': '5000',
+        'perth': '6000',
+        'hobart': '7000',
+        'darwin': '0800',
+        'canberra': '2600',
+    }
     candidates = [dict(suburb=row[0], postcode=row[1]) for row in rows]
-    # If still no candidates and suburb is 'melbourne', add fallback
-    if not candidates and suburb == 'melbourne':
-        candidates.append({'suburb': 'Melbourne', 'postcode': '3000'})
+    city_key = suburb.strip().lower()
+    if city_key in city_fallbacks:
+        city_candidate = {'suburb': city_key.title(), 'postcode': city_fallbacks[city_key]}
+        # Only add if not already present
+        if city_candidate not in candidates:
+            candidates.insert(0, city_candidate)
+    # If still no candidates, use Nominatim to geocode and extract postcode
+    if not candidates:
+        try:
+            url = f"https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q={suburb}, Australia"
+            resp = requests.get(url, headers={'User-Agent': 'petrol-forecast-bot'})
+            data = resp.json()
+            if data:
+                best = data[0]
+                # Try to extract postcode and suburb name from address
+                address = best.get('address', {})
+                nom_suburb = address.get('suburb') or address.get('city') or address.get('town') or address.get('village') or suburb.title()
+                postcode = address.get('postcode', '')
+                if nom_suburb and not postcode and city_key in city_fallbacks:
+                    postcode = city_fallbacks[city_key]
+                # Removed stray 'i' character that caused syntax error
+                if nom_suburb and postcode:
+                    candidates.append({'suburb': nom_suburb, 'postcode': postcode})
+        except Exception:
+            pass
     conn.close()
     return jsonify({'candidates': candidates})
 
@@ -94,8 +127,23 @@ def save_geocode_cache():
         json.dump(_geocode_cache, f)
 
 def geocode_cached(suburb, postcode=None):
-    cache = load_geocode_cache()
+    # Fallback coordinates for capital city+postcode pairs
+    city_coords = {
+        ('melbourne', '3000'): (-37.8142454, 144.9631732),
+        ('sydney', '2000'): (-33.8688, 151.2093),
+        ('brisbane', '4000'): (-27.4698, 153.0251),
+        ('adelaide', '5000'): (-34.9285, 138.6007),
+        ('perth', '6000'): (-31.9505, 115.8605),
+        ('hobart', '7000'): (-42.8821, 147.3272),
+        ('darwin', '0800'): (-12.4634, 130.8456),
+        ('canberra', '2600'): (-35.2820, 149.1286),
+    }
     key = suburb.strip().lower()
+    if postcode:
+        city_key = (key, str(postcode).strip())
+        if city_key in city_coords:
+            return city_coords[city_key]
+    cache = load_geocode_cache()
     if postcode:
         key = f"{key} {str(postcode).strip()}"
     if key in cache:
