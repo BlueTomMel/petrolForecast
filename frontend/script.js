@@ -257,37 +257,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     changeHtml = `<span>${latest.changes}</span>`;
                 }
             }
-            if (displayMode === 'simple') {
-                // Build MapLink: distance + link to Google Maps from suburb center to station
-                let mapLink = '';
-                if (latest.distance_km !== undefined && latest.lat && latest.lng && latest.suburb_center_lat && latest.suburb_center_lng) {
-                    const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${latest.suburb_center_lat},${latest.suburb_center_lng}&destination=${latest.lat},${latest.lng}`;
-                    mapLink = `${latest.distance_km.toFixed(2)} km <a href="${gmapsUrl}" target="_blank" style="color:#4285f4;text-decoration:underline;">MapLink</a>`;
-                } else if (latest.gmaps_url && latest.distance_km !== undefined) {
-                    mapLink = `${latest.distance_km.toFixed(2)} km <a href="${latest.gmaps_url}" target="_blank" style="color:#4285f4;text-decoration:underline;">MapLink</a>`;
-                } else {
-                    mapLink = '-';
-                }
-                html += `<tr>` +
-                    `<td>${latest.station}</td>` +
-                    `<td>${latest.address || ''}</td>` +
-                    `<td>${latest.price}</td>` +
-                    `<td>${changeHtml}</td>` +
-                    `<td>${mapLink}</td>` +
-                `</tr>`;
+        if (displayMode === 'simple') {
+            // Build MapLink: distance + link to Google Maps from suburb center to station
+            let mapLink = '';
+            if (latest.distance_km !== undefined && latest.lat && latest.lng && latest.suburb_center_lat && latest.suburb_center_lng) {
+                const gmapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${latest.suburb_center_lat},${latest.suburb_center_lng}&destination=${latest.lat},${latest.lng}`;
+                mapLink = `${latest.distance_km.toFixed(2)} km <a href="${gmapsUrl}" target="_blank" style="color:#4285f4;text-decoration:underline;">MapLink</a>`;
+            } else if (latest.gmaps_url && latest.distance_km !== undefined) {
+                mapLink = `${latest.distance_km.toFixed(2)} km <a href="${latest.gmaps_url}" target="_blank" style="color:#4285f4;text-decoration:underline;">MapLink</a>`;
             } else {
-                html += `<tr>` +
-                    `<td>${latest.postcode}</td>` +
-                    `<td>${latest.suburb}</td>` +
-                    `<td>${latest.station}</td>` +
-                    `<td>${latest.address || ''}</td>` +
-                    `<td>${latest.date}</td>` +
-                    `<td>${latest.price}</td>` +
-                    `<td>${changeHtml}</td>` +
-                    `<td>${latest.distance_km !== undefined ? latest.distance_km.toFixed(2) : ''}</td>` +
-                    `<td><a href="${latest.gmaps_url}" target="_blank">Map</a></td>` +
-                `</tr>`;
+                mapLink = '-';
             }
+            html += `<tr>` +
+                `<td data-label="Station">${latest.station}</td>` +
+                `<td data-label="Address">${latest.address || ''}</td>` +
+                `<td data-label="Price">${latest.price}</td>` +
+                `<td data-label="Changes">${changeHtml}</td>` +
+                `<td data-label="Direct Distance">${mapLink}</td>` +
+            `</tr>`;
+        } else {
+            html += `<tr>` +
+                `<td data-label="Postcode">${latest.postcode}</td>` +
+                `<td data-label="Suburb">${latest.suburb}</td>` +
+                `<td data-label="Station">${latest.station}</td>` +
+                `<td data-label="Address">${latest.address || ''}</td>` +
+                `<td data-label="Date">${latest.date}</td>` +
+                `<td data-label="Price">${latest.price}</td>` +
+                `<td data-label="Changes">${changeHtml}</td>` +
+                `<td data-label="Distance (km)">${latest.distance_km !== undefined ? latest.distance_km.toFixed(2) : ''}</td>` +
+                `<td data-label="Map"><a href="${latest.gmaps_url}" target="_blank">Map</a></td>` +
+            `</tr>`;
+        }
         }
         html += '</tbody></table>';
         container.innerHTML = html;
