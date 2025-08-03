@@ -68,11 +68,35 @@ document.addEventListener('DOMContentLoaded', function() {
             svgFile = 'graph/brisbane.svg';
             svgAlt = 'Brisbane Petrol Price Forecast';
         }
+        // Show graph
         container.innerHTML = `
             <div style="width:100%;max-width:600px;margin:2.5em auto 0 auto;display:flex;justify-content:center;align-items:center;padding:1.5em 0 1em 0;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
                 <img src="${svgFile}" alt="${svgAlt}" style="width:100%;height:auto;max-width:600px;display:block;" />
             </div>
+            <div id="forecast-message" style="width:100%;max-width:600px;margin:1.5em auto 0 auto;display:flex;justify-content:center;align-items:center;"></div>
         `;
+        // Fetch and display forecast message
+        const forecastMsgDiv = document.getElementById('forecast-message');
+        forecastMsgDiv.innerHTML = '<span style="color:#888;font-size:1.1em;">Loading AI forecast...</span>';
+        try {
+            const resp = await fetch(`/api/forecast?city=${encodeURIComponent(state)}`);
+            if (resp.ok) {
+                const data = await resp.json();
+                if (data && data.forecast_text) {
+                    let dateStr = '';
+                    if (data.created_at) {
+                        dateStr = `<div style="margin-top:0.7em;font-size:0.93em;color:#888;text-align:right;">Generated: <span style="font-family:monospace">${data.created_at}</span></div>`;
+                    }
+                    forecastMsgDiv.innerHTML = `<div style=\"background:#f5faff;border-radius:8px;padding:1.2em 1em;box-shadow:0 2px 8px #e3f2fd;font-size:1.08em;color:#1565c0;line-height:1.6;\"><b>AI Forecast for Next Week:</b><br>${data.forecast_text.replace(/\n/g,'<br>')}${dateStr}</div>`;
+                } else {
+                    forecastMsgDiv.innerHTML = '<span style="color:#b71c1c;">No forecast available at this time.</span>';
+                }
+            } else {
+                forecastMsgDiv.innerHTML = '<span style="color:#b71c1c;">Failed to fetch forecast.</span>';
+            }
+        } catch (e) {
+            forecastMsgDiv.innerHTML = '<span style="color:#b71c1c;">Error loading forecast.</span>';
+        }
     });
     container.style.display = 'none';
     const suburbInput = document.getElementById('suburb-input');

@@ -1,5 +1,4 @@
 
-
 from flask import Flask, request, jsonify, send_from_directory
 import sqlite3
 import math
@@ -8,10 +7,52 @@ import os
 import json
 from threading import Lock
 
-app = Flask(__name__, static_folder='../frontend', static_url_path='')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
+DATA_DIR = os.path.join(BASE_DIR, 'backend', 'data')
+DB_PATH = os.path.join(DATA_DIR, 'history.db')
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
+
+# --- Forecast API endpoint ---
+@app.route('/api/forecast')
+def api_forecast():
+    city = request.args.get('city', '').strip().lower()
+    city_map = {
+        'melbourne': 'Melbourne',
+        'sydney': 'Sydney',
+        'brisbane': 'Brisbane',
+    }
+    city_name = city_map.get(city)
+    if not city_name:
+        return {"error": "Invalid city."}, 400
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('''
+        SELECT forecast_text, created_at FROM petrol_forecast
+        WHERE city = ?
+        ORDER BY forecast_date DESC, created_at DESC
+        LIMIT 1
+    ''', (city_name,))
+    row = c.fetchone()
+    conn.close()
+    if row:
+        forecast_text, created_at = row
+        # Format created_at for display (YYYY-MM-DD HH:MM:SS)
+        try:
+            from datetime import datetime
+            dt = datetime.strptime(created_at[:19], "%Y-%m-%d %H:%M:%S")
+            created_at_str = dt.strftime("%Y-%m-%d %H:%M:%S")
+        except Exception:
+            created_at_str = created_at
+        return {"forecast_text": forecast_text, "created_at": created_at_str}
+    else:
+        return {"forecast_text": None, "created_at": None}
+
+
+## Removed duplicate Flask app initialization here. Only the first initialization at the top is used.
 
 # --- Geocode cache (JSON file) ---
-GEOCODE_CACHE_PATH = os.path.join(os.path.dirname(__file__), 'data', 'geocode_cache.json')
+GEOCODE_CACHE_PATH = os.path.join(DATA_DIR, 'geocode_cache.json')
 _geocode_cache = None
 _geocode_cache_lock = Lock()
 
@@ -64,7 +105,6 @@ _station_data_lock = Lock()
 def load_station_data():
     global _station_data
     if _station_data is None:
-        DB_PATH = os.path.join(os.path.dirname(__file__), 'data', 'history.db')
         conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         c.execute("SELECT * FROM latest_petrol_prices WHERE lat IS NOT NULL AND lng IS NOT NULL AND lat != '' AND lng != ''")
@@ -148,8 +188,7 @@ def serve_static(path):
 
 @app.route('/api/prices')
 def get_prices():
-    db_path = os.path.join(os.path.dirname(__file__), 'data', 'history.db')
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     # Get only the latest price for each unique station (postcode, suburb, station, address)
     c.execute('''
