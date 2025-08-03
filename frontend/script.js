@@ -1,4 +1,40 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // --- Suburb confirmation modal logic ---
+    function showSuburbModal(options, onSelect) {
+        const modal = document.getElementById('suburb-modal');
+        const list = document.getElementById('suburb-options');
+        list.innerHTML = '';
+        options.forEach(opt => {
+            const li = document.createElement('li');
+            li.textContent = `${opt.suburb}, ${opt.postcode}`;
+            li.style.cursor = 'pointer';
+            li.style.background = '#f5f5f5';
+            li.style.margin = '0.3em 0';
+            li.style.padding = '0.7em 0.5em';
+            li.style.borderRadius = '7px';
+            li.style.transition = 'background 0.15s';
+            li.onmouseenter = () => { li.style.background = '#e3e3e3'; };
+            li.onmouseleave = () => { li.style.background = '#f5f5f5'; };
+            li.onclick = () => {
+                modal.style.display = 'none';
+                onSelect(opt);
+            };
+            list.appendChild(li);
+        });
+        document.getElementById('close-modal').onclick = () => {
+            modal.style.display = 'none';
+        };
+        modal.style.display = 'flex';
+    }
+
+    async function fetchSuburbCandidates(suburb) {
+        const resp = await fetch(`/api/suburb_candidates?suburb=${encodeURIComponent(suburb)}`);
+        if (!resp.ok) return [];
+        const data = await resp.json();
+        if (Array.isArray(data)) return data;
+        if (data && Array.isArray(data.candidates)) return data.candidates;
+        return [];
+    }
     const container = document.getElementById('price-table-container');
     const forecastButton = document.getElementById('forecast');
     // Forecast button: show error if empty, else show correct SVG by state
@@ -120,62 +156,50 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     button.addEventListener('click', async () => {
-        const suburb = suburbInput.value.trim();
-        // Get advanced options only if visible
+        const suburbRaw = suburbInput.value.trim();
+        if (!suburbRaw) {
+            container.innerHTML = '<p>Please enter a valid suburb.</p>';
+            container.style.display = '';
+            return;
+        }
+        // Always extract only the suburb name (before comma) for candidate lookup
+        let suburb = suburbRaw.split(',')[0].trim();
+        // Fetch suburb candidates from backend
+        const candidates = await fetchSuburbCandidates(suburb);
+        if (candidates.length === 0) {
+            container.innerHTML = `<p>No suburb found for: <b>${suburb}</b></p>`;
+            container.style.display = '';
+            return;
+        }
+        // Always show confirmation modal, even if only one candidate
+        let confirmedSuburb = null;
+        await new Promise(resolve => {
+            showSuburbModal(candidates, picked => {
+                confirmedSuburb = picked;
+                resolve();
+            });
+        });
+        // Get advanced options
         let distance = 5;
         let orderBy = 'price';
         let displayMode = 'simple';
+        if (!distanceInput) distanceInput = document.getElementById('distance-input');
+        if (distanceInput && !isNaN(parseFloat(distanceInput.value))) {
+            distance = parseFloat(distanceInput.value);
+        }
         if (advancedOptions.style.display !== 'none') {
-            distanceInput = document.getElementById('distance-input');
             orderBySelect = document.getElementById('order-by');
             brandSelect = document.getElementById('brand-select');
             displayInfoSelect = document.getElementById('display-info');
-            distance = parseFloat(distanceInput.value);
-            orderBy = orderBySelect.value;
+            orderBy = orderBySelect ? orderBySelect.value : 'price';
             displayMode = displayInfoSelect ? displayInfoSelect.value : 'simple';
-            // Get selected brands as array
-            let selectedBrands = Array.from(brandSelect.selectedOptions || []).map(opt => opt.value);
-            if (!suburb || isNaN(distance) || distance <= 0) {
-                container.innerHTML = '<p>Please enter a valid suburb and distance.</p>';
-                container.style.display = '';
-                return;
-            }
-        } else {
-            if (!suburb) {
-                container.innerHTML = '<p>Please enter a valid suburb.</p>';
-                container.style.display = '';
-                return;
-            }
         }
         container.innerHTML = '<p>Searching...</p>';
         container.style.display = '';
-        // Validate suburb using Nominatim
-        let validSuburb = false;
-        let suggestion = '';
+        // Use confirmedSuburb.suburb and confirmedSuburb.postcode for search
+        let url = `/api/stations_in_range?suburb=${encodeURIComponent(confirmedSuburb.suburb)}&postcode=${encodeURIComponent(confirmedSuburb.postcode)}&distance=${distance}`;
         try {
-            const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(suburb + ', Australia')}`);
-            const geoResults = await geoResp.json();
-            if (geoResults.length > 0) {
-                // Check if the first result matches suburb
-                const best = geoResults[0];
-                // Accept if the input matches the display_name suburb part
-                if (best.display_name.toLowerCase().includes(suburb.toLowerCase())) {
-                    validSuburb = true;
-                } else {
-                    suggestion = best.display_name.split(',')[0];
-                }
-            }
-        } catch (e) {
-            // If geocoding fails, fallback to search
-            validSuburb = true;
-        }
-        if (!validSuburb && suggestion) {
-            container.innerHTML = `<p>Suburb not found. Did you mean <b>\"${suggestion}\"</b>?`;
-            return;
-        }
-        // Proceed with search if valid
-        try {
-            const resp = await fetch(`/api/stations_in_range?suburb=${encodeURIComponent(suburb)}&distance=${distance}`);
+            const resp = await fetch(url);
             let rows = await resp.json();
             // Deduplicate by station+address+postcode+date
             const dedupMap = new Map();

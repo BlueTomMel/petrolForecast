@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify, send_from_directory
 import sqlite3
 import math
@@ -12,6 +11,20 @@ FRONTEND_DIR = os.path.join(BASE_DIR, 'frontend')
 DATA_DIR = os.path.join(BASE_DIR, 'backend', 'data')
 DB_PATH = os.path.join(DATA_DIR, 'history.db')
 app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
+
+# --- Suburb Candidates API endpoint ---
+@app.route('/api/suburb_candidates')
+def suburb_candidates():
+    suburb = request.args.get('suburb', '').strip().lower()
+    if not suburb:
+        return jsonify({'candidates': []})
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("SELECT DISTINCT suburb, postcode FROM latest_petrol_prices WHERE LOWER(suburb)=? ORDER BY postcode", (suburb,))
+    rows = c.fetchall()
+    conn.close()
+    candidates = [dict(suburb=row[0], postcode=row[1]) for row in rows]
+    return jsonify({'candidates': candidates})
 
 # --- Forecast API endpoint ---
 @app.route('/api/forecast')
@@ -71,12 +84,18 @@ def save_geocode_cache():
     with open(GEOCODE_CACHE_PATH, 'w') as f:
         json.dump(_geocode_cache, f)
 
-def geocode_cached(suburb):
+def geocode_cached(suburb, postcode=None):
     cache = load_geocode_cache()
     key = suburb.strip().lower()
+    if postcode:
+        key = f"{key} {str(postcode).strip()}"
     if key in cache:
         return cache[key]['lat'], cache[key]['lng']
-    url = f"https://nominatim.openstreetmap.org/search?format=json&q={suburb}, Australia"
+    # Compose query for geocoding
+    query = suburb
+    if postcode:
+        query = f"{suburb} {postcode}"
+    url = f"https://nominatim.openstreetmap.org/search?format=json&q={query}, Australia"
     try:
         resp = requests.get(url, headers={'User-Agent': 'petrol-forecast-bot'})
         data = resp.json()
@@ -128,15 +147,16 @@ def get_result_cache_key(suburb, distance):
 @app.route('/api/stations_in_range')
 def stations_in_range():
     suburb = request.args.get('suburb')
+    postcode = request.args.get('postcode')
     max_dist = request.args.get('distance', type=float)
     if not suburb or max_dist is None:
         return jsonify({'error': 'Missing suburb or distance'}), 400
-    # Result cache lookup
-    cache_key = get_result_cache_key(suburb, max_dist)
+    # Result cache lookup (include postcode in key if provided)
+    cache_key = f"{suburb.strip().lower()}|{postcode or ''}|{max_dist}"
     with _result_cache_lock:
         if cache_key in _result_cache:
             return jsonify(_result_cache[cache_key])
-    lat, lng = geocode_cached(suburb)
+    lat, lng = geocode_cached(suburb, postcode)
     if lat is None or lng is None:
         # Try to suggest a similar suburb using Nominatim
         url = f"https://nominatim.openstreetmap.org/search?format=json&q={suburb}, Australia"
