@@ -12,6 +12,10 @@ DATA_DIR = os.path.join(BASE_DIR, 'backend', 'data')
 DB_PATH = os.path.join(DATA_DIR, 'history.db')
 app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
 
+# Enable CORS after app is defined
+from flask_cors import CORS
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}})
+
 # --- Suburb Candidates API endpoint ---
 @app.route('/api/suburb_candidates')
 def suburb_candidates():
