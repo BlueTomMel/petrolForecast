@@ -247,11 +247,12 @@ function App() {
     <div className="app-container">
       <div className="content-wrapper">
         <h1 className="title" style={{
-          fontFamily: 'Product Sans, Arial, Helvetica, sans-serif',
-          fontWeight: 900,
-          fontSize: '3.1rem',
-          letterSpacing: '0.08em',
-          margin: '0 0 32px 0',
+          // fontFamily: 'Product Sans, Arial, Helvetica, sans-serif',
+          fontFamily: "''Impact', 'Arial Black', Arial, sans-serif",
+          fontWeight: 300,
+          fontSize: '2.9rem',
+          letterSpacing: '0.39em',
+          margin: '0 0 30px 0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -259,12 +260,12 @@ function App() {
           textShadow: '0 2.5px 8px #e0e0e0',
         }}>
           <span style={{ color: '#4285F4', marginRight: '-0.04em', fontWeight: 900 }}>P</span>
-          <span style={{ color: '#FBBC05', marginRight: '-0.04em', fontWeight: 900 }}>e</span>
+          <span style={{ color: '#EA4335', marginRight: '-0.04em', fontWeight: 900 }}>e</span>
           <span style={{ color: '#FBBC05', marginRight: '-0.04em', fontWeight: 900 }}>t</span>
           <span style={{ color: '#34A853', marginRight: '-0.04em', fontWeight: 900 }}>r</span>
           <span style={{ color: '#EA4335', marginRight: '-0.04em', fontWeight: 900 }}>o</span>
           <span style={{ color: '#4285F4', marginRight: '0.18em', fontWeight: 900 }}>l</span>
-          <span style={{ width: 16 }} />
+          <span style={{ width: 9 }} />
           <span style={{ color: '#34A853', marginRight: '-0.04em', fontWeight: 900 }}>P</span>
           <span style={{ color: '#EA4335', marginRight: '-0.04em', fontWeight: 900 }}>r</span>
           <span style={{ color: '#FBBC05', marginRight: '-0.04em', fontWeight: 900 }}>i</span>
@@ -290,9 +291,10 @@ function App() {
                 style={{
                   width: '100%',
                   maxWidth: 540,
-                  padding: '0.9em 3.5em 0.9em 3em',
-                  fontSize: '1.25em',
-                  borderRadius: 32,
+                  height: 40, // slightly taller for better usability
+                  padding: '0 3.5em 0 3em', // keep vertical padding minimal for modern look
+                  fontSize: '1.13em',
+                  borderRadius: 24,
                   border: '1.5px solid #dfe1e5',
                   background: '#fff',
                   boxShadow: '0 2px 6px rgba(60,64,67,0.15)',
@@ -303,6 +305,7 @@ function App() {
                   color: '#222',
                   margin: 0,
                   zIndex: 1,
+                  lineHeight: 1.2,
                 }}
               />
               {/* 3-dots more options button inside input, at far right, like Google mic/settings */}
