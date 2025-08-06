@@ -250,14 +250,14 @@ function App() {
           // fontFamily: 'Product Sans, Arial, Helvetica, sans-serif',
           fontFamily: "''Impact', 'Arial Black', Arial, sans-serif",
           fontWeight: 300,
-          fontSize: '2.9rem',
+          fontSize: '2.7rem',
           letterSpacing: '0.39em',
           margin: '0 0 30px 0',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           userSelect: 'none',
-          textShadow: '0 2.5px 8px #e0e0e0',
+          textShadow: '0 5.5px 8px #e0e0e0',
         }}>
           <span style={{ color: '#4285F4', marginRight: '-0.04em', fontWeight: 900 }}>P</span>
           <span style={{ color: '#EA4335', marginRight: '-0.04em', fontWeight: 900 }}>e</span>
@@ -265,7 +265,7 @@ function App() {
           <span style={{ color: '#34A853', marginRight: '-0.04em', fontWeight: 900 }}>r</span>
           <span style={{ color: '#EA4335', marginRight: '-0.04em', fontWeight: 900 }}>o</span>
           <span style={{ color: '#4285F4', marginRight: '0.18em', fontWeight: 900 }}>l</span>
-          <span style={{ width: 9 }} />
+          <span style={{ width: 2 }} />
           <span style={{ color: '#34A853', marginRight: '-0.04em', fontWeight: 900 }}>P</span>
           <span style={{ color: '#EA4335', marginRight: '-0.04em', fontWeight: 900 }}>r</span>
           <span style={{ color: '#FBBC05', marginRight: '-0.04em', fontWeight: 900 }}>i</span>
@@ -291,7 +291,7 @@ function App() {
                 style={{
                   width: '100%',
                   maxWidth: 540,
-                  height: 40, // slightly taller for better usability
+                  height: 45, // slightly taller for better usability
                   padding: '0 3.5em 0 3em', // keep vertical padding minimal for modern look
                   fontSize: '1.13em',
                   borderRadius: 24,
@@ -361,7 +361,7 @@ function App() {
                 className="button search-button"
                 disabled={loading}
                 style={{
-                  background: 'linear-gradient(180deg, #e57373 0%, #c62828 100%)',
+                  background: 'linear-gradient(180deg, #e26e6eff 0%, #b45b5bff 100%)',
                   color: '#fff',
                   fontWeight: 500,
                   fontSize: '1.08em',
@@ -385,7 +385,7 @@ function App() {
                 className="button forecast-button"
                 disabled={forecastLoading}
                 style={{
-                  background: 'linear-gradient(180deg, #2196f3 0%, #1565c0 100%)',
+                  background: 'linear-gradient(180deg, hsla(207, 47%, 52%, 1.00) 0%, hsla(213, 56%, 33%, 1.00) 100%)',
                   color: '#fff',
                   fontWeight: 500,
                   fontSize: '1.08em',

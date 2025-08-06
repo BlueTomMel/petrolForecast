@@ -1,13 +1,62 @@
+# Node
+node_modules/
+
+# Dependency directories
+frontend-react/node_modules/
+frontend/node_modules/
+
+# Build output
+frontend-react/dist/
+frontend/dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+
+# Python
 __pycache__/
 *.pyc
+.venv/
+venv/
 *.pyo
 *.pyd
 .env
-venv/
 .envrc
-.DS_Store
-*.sqlite3
-*.log
-.history.csv
 
-.venv/
+# Environment
+.env
+.env.*
+
+# Misc
+*.local
+
+# Root lock files (should only be in frontend-react/ or backend/)
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# Ignore root-level node_modules if accidentally created
+/node_modules/
+
+# Ignore test coverage
+coverage/
+
+# Ignore SQLite DBs
+*.sqlite3
+*.db
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Project data
+.history.csv
