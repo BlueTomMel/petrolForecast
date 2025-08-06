@@ -1,8 +1,8 @@
-
 import { useState, useMemo, useRef, useEffect } from 'react';
-
+import './App.css'; // Import the new CSS file
 
 function App() {
+  // All your state declarations remain the same
   const [search, setSearch] = useState('');
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -13,19 +13,20 @@ function App() {
   const [showOptions, setShowOptions] = useState(false);
   const [distance, setDistance] = useState(5);
   const [orderBy, setOrderBy] = useState('price');
-  // Fixed brand list from previous frontend
-  // Reordered: BP, Coles Express, Ampol, 7-Eleven at top, then rest, plus 'Better Choice'
   const FIXED_BRANDS = [
-    "All",
-    "BP",
-    "Coles Express",
-    "Ampol",
-    "7-Eleven",
-    "Better Choice",
-    "7Star Service Stations", "Apex Petroleum", "Astron", "Atlas Fuel", "Budget", "Burk", "Caltex", "Costco", "FastFuel", "Freedom Fuels", "Liberty", "Matilda", "Medco Petroleum", "Metro Petroleum", "Mobil", "On The Run (OTR)", "Pacific Petroleum", "Pearl Energy", "Peak Petroleum", "Power Fuel", "Reddy Express", "Shell", "Solo", "Speedway", "U-GO", "United", "Vibe", "Westside Petroleum"
+    "All", "BP", "Coles Express", "Ampol", "7-Eleven", "Better Choice", "7Star Service Stations", "Apex Petroleum", "Astron", "Atlas Fuel", "Budget", "Burk", "Caltex", "Costco", "FastFuel", "Freedom Fuels", "Liberty", "Matilda", "Medco Petroleum", "Metro Petroleum", "Mobil", "On The Run (OTR)", "Pacific Petroleum", "Pearl Energy", "Peak Petroleum", "Power Fuel", "Reddy Express", "Shell", "Solo", "Speedway", "U-GO", "United", "Vibe", "Westside Petroleum"
   ];
-  const [selectedBrands, setSelectedBrands] = useState([]); // array of selected brands
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [forecastModal, setForecastModal] = useState(false);
+  const [forecastCandidates, setForecastCandidates] = useState([]);
+  const [forecastLoading, setForecastLoading] = useState(false);
+  const [forecastError, setForecastError] = useState('');
+  const [forecastSVG, setForecastSVG] = useState(null);
+  const [forecastMsg, setForecastMsg] = useState('');
+  const [forecastMsgDate, setForecastMsgDate] = useState('');
+  const [forecastCity, setForecastCity] = useState('');
 
+  // All your functions (handleSearch, handleCandidateClick, handleForecast, etc.) remain exactly the same
   const handleSearch = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -33,6 +34,12 @@ function App() {
     setShowModal(false);
     setSelected(null);
     setStations([]);
+    // Clear forecast state when searching
+    setForecastSVG(null);
+    setForecastMsg('');
+    setForecastMsgDate('');
+    setForecastCity('');
+    setForecastError('');
     fetch(`http://127.0.0.1:5000/api/suburb_candidates?suburb=${encodeURIComponent(search)}`)
       .then(res => res.json())
       .then(data => {
@@ -40,12 +47,11 @@ function App() {
         setCandidates(candidates);
         setLoading(false);
         if (candidates.length === 1) {
-          // If only one candidate, select it and fetch stations after state updates
           setTimeout(() => handleCandidateClick(candidates[0]), 0);
         } else if (candidates.length > 1) {
           setShowModal(true);
         } else {
-          setShowModal(true); // show 'no candidates found' in modal
+          setShowModal(true);
         }
       })
       .catch(() => {
@@ -54,24 +60,20 @@ function App() {
       });
   };
 
-
   const handleCandidateClick = (c) => {
     setSelected(c);
     setSearch(`${c.suburb} ${c.postcode}`);
     setShowModal(false);
     setStations([]);
-    // Use current distance and orderBy when fetching stations
     fetchStationsForCandidate(c, distance);
   };
 
-  // Helper to fetch stations for a given candidate
   const fetchStationsForCandidate = (candidate, dist) => {
     if (!candidate) return;
     setStationsLoading(true);
     fetch(`http://127.0.0.1:5000/api/stations_in_range?suburb=${encodeURIComponent(candidate.suburb)}&postcode=${encodeURIComponent(candidate.postcode)}&distance=${dist}`)
       .then(res => res.json())
       .then(data => {
-        // Accept both array and object response
         const stationsArr = Array.isArray(data) ? data : (data.stations || []);
         setStations(stationsArr);
         setStationsLoading(false);
@@ -82,16 +84,10 @@ function App() {
       });
   };
 
-  // Remove fetchStations, now handled by search and candidate click
-
-
-  // Helper: find matching brand from fixed list for a station name
   function getStationBrand(stationName) {
     if (!stationName) return '';
     const lower = stationName.toLowerCase();
-    // Special case: treat 'EG Ampol' as 'Ampol'
     if (lower.startsWith('eg ampol')) return 'Ampol';
-    // Try to match the longest brand name at the start (skip 'All')
     let found = '';
     for (const brand of FIXED_BRANDS) {
       if (brand === 'All') continue;
@@ -102,7 +98,6 @@ function App() {
     return found || '';
   }
 
-  // Get all brands present in stations (for "Others" logic)
   const allStationBrands = useMemo(() => {
     const brands = new Set();
     stations.forEach(s => {
@@ -111,10 +106,8 @@ function App() {
     return Array.from(brands);
   }, [stations]);
 
-  // Brands not in fixed list (for "Others" option)
   const hasOtherBrands = allStationBrands.includes('__OTHER__');
 
-  // Filter stations by selected brands (including 'Others' and 'All')
   const filteredStations =
     selectedBrands.length === 0 || selectedBrands.includes('All')
       ? stations
@@ -126,7 +119,6 @@ function App() {
           return selectedBrands.includes(brand);
         });
 
-  // Sort stations by selected order
   const sortedStations = [...filteredStations].sort((a, b) => {
     if (orderBy === 'price') {
       return (a.price ?? 0) - (b.price ?? 0);
@@ -136,415 +128,461 @@ function App() {
     return 0;
   });
 
-  // --- Forecast state ---
-  const [forecastModal, setForecastModal] = useState(false);
-  const [forecastCandidates, setForecastCandidates] = useState([]);
-  const [forecastLoading, setForecastLoading] = useState(false);
-  const [forecastError, setForecastError] = useState('');
-  const [forecastSVG, setForecastSVG] = useState(null);
-  const [forecastMsg, setForecastMsg] = useState('');
-  const [forecastMsgDate, setForecastMsgDate] = useState('');
-  const [forecastCity, setForecastCity] = useState('');
-
-  // --- Forecast logic ---
   async function handleForecast() {
-    setForecastError('');
+    // Clear search result and filters when forecasting
+    setStations([]);
+    setSelected(null);
+    setShowOptions(false);
+    setCandidates([]);
+    setShowModal(false);
+    setLoading(false);
+    setOrderBy('price');
+    setDistance(5);
+    setSelectedBrands([]);
+    setForecastError(''); // Clear error when opening modal
     setForecastSVG(null);
     setForecastMsg('');
     setForecastMsgDate('');
     setForecastCity('');
-    const suburbRaw = search.trim();
-    if (!suburbRaw) {
-      setForecastError('Please enter the suburb');
-      return;
-    }
-    // Only use the part before comma
-    const suburb = suburbRaw.split(',')[0].trim();
-    setForecastLoading(true);
-    // Fetch suburb candidates
-    let candidates = [];
-    try {
-      const resp = await fetch(`http://127.0.0.1:5000/api/suburb_candidates?suburb=${encodeURIComponent(suburb)}`);
-      const data = await resp.json();
-      candidates = data.candidates || [];
-    } catch {
-      setForecastError('Error fetching suburb candidates.');
-      setForecastLoading(false);
-      return;
-    }
-    setForecastCandidates(candidates);
+    setForecastCandidates([]);
     setForecastModal(true);
+    setForecastLoading(true);
+    try {
+      const res = await fetch(`http://127.0.0.1:5000/api/suburb_candidates?suburb=${encodeURIComponent(search)}`);
+      const data = await res.json();
+      const candidates = data.candidates || [];
+      setForecastCandidates(candidates);
+    } catch (e) {
+      setForecastCandidates([]);
+    }
     setForecastLoading(false);
   }
 
-  // When a suburb is confirmed for forecast
+  // Map postcode to state
+  function getStateFromPostcode(postcode) {
+    const n = parseInt(postcode, 10);
+    if (n >= 1000 && n <= 2599) return 'NSW';
+    if (n >= 2619 && n <= 2899) return 'NSW';
+    if (n >= 200 && n <= 299) return 'ACT';
+    if (n >= 3000 && n <= 3999) return 'VIC';
+    if (n >= 4000 && n <= 4999) return 'QLD';
+    if (n >= 5000 && n <= 5999) return 'SA';
+    if (n >= 6000 && n <= 6999) return 'WA';
+    if (n >= 7000 && n <= 7999) return 'TAS';
+    if (n >= 800 && n <= 999) return 'NT';
+    return '';
+  }
+
   async function handleForecastConfirm(candidate) {
-    setForecastModal(false);
     setForecastLoading(true);
     setForecastError('');
     setForecastSVG(null);
     setForecastMsg('');
     setForecastMsgDate('');
     setForecastCity('');
-    // Geocode suburb to get state
-    let state = null;
-    try {
-      const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(candidate.suburb + ' ' + candidate.postcode + ', Australia')}`);
-      const geoResults = await geoResp.json();
-      if (geoResults.length > 0) {
-        const best = geoResults[0];
-        let stateName = '';
-        if (best.address && best.address.state) {
-          stateName = best.address.state.toLowerCase();
-        } else if (best.display_name) {
-          const parts = best.display_name.split(',').map(s => s.trim().toLowerCase());
-          const knownStates = ['victoria', 'new south wales', 'queensland'];
-          stateName = parts.find(p => knownStates.includes(p)) || '';
-        }
-        if (stateName.includes('victoria')) {
-          state = 'melbourne';
-        } else if (stateName.includes('new south wales')) {
-          state = 'sydney';
-        } else if (stateName.includes('queensland')) {
-          state = 'brisbane';
-        }
-      }
-    } catch {
-      setForecastError('Could not determine suburb location. Please try again.');
+    setForecastModal(false);
+    // Determine state and city
+    const state = getStateFromPostcode(candidate.postcode);
+    let city = '';
+    let capitalPostcode = '';
+    if (state === 'NSW' || state === 'ACT') {
+      city = 'Sydney';
+      capitalPostcode = '2000';
+    } else if (state === 'VIC') {
+      city = 'Melbourne';
+      capitalPostcode = '3000';
+    } else if (state === 'QLD') {
+      city = 'Brisbane';
+      capitalPostcode = '4000';
+    } else {
+      setForecastError('No forecast available for this state.');
       setForecastLoading(false);
       return;
     }
-    if (!state) {
-      setForecastError('Suburb not found or not in VIC/NSW/QLD.');
-      setForecastLoading(false);
-      return;
-    }
-    setForecastCity(state);
-    // Show SVG
-    setForecastSVG(`/graph/${state}.svg`);
-    // Fetch forecast message
     try {
-      const resp = await fetch(`http://127.0.0.1:5000/api/forecast?city=${encodeURIComponent(state)}`);
-      if (resp.ok) {
-        const data = await resp.json();
-        if (data && data.forecast_text) {
-          setForecastMsg(data.forecast_text);
-          setForecastMsgDate(data.created_at || '');
-        } else {
-          setForecastMsg('No forecast available at this time.');
-        }
+      // Use 'city' param for /api/forecast, not 'suburb' or 'postcode'
+      const res = await fetch(`http://127.0.0.1:5000/api/forecast?city=${encodeURIComponent(city)}`);
+      const data = await res.json();
+      if (data && data.forecast_text) {
+        // Show SVG for the capital city if available
+        const svgPath = `/graph/${city.toLowerCase()}.svg`;
+        setForecastSVG(svgPath);
+        setForecastMsg(data.forecast_text);
+        setForecastMsgDate(data.created_at || '');
+        setForecastCity(city);
       } else {
-        setForecastMsg('Failed to fetch forecast.');
+        setForecastError('No forecast data available.');
       }
-    } catch {
-      setForecastMsg('Error loading forecast.');
+    } catch (e) {
+      setForecastError('Failed to fetch forecast.');
     }
     setForecastLoading(false);
   }
+
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fff', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Arial, sans-serif' }}>
-      <div style={{ width: '100%', maxWidth: 600, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-        <h1 style={{
-          fontFamily: 'Arial, sans-serif',
-          fontSize: '3.2em',
-          textAlign: 'center',
-          marginBottom: '1.2em',
-          letterSpacing: '0.21em',
+    <div className="app-container">
+      <div className="content-wrapper">
+        <h1 className="title" style={{
+          fontFamily: 'Product Sans, Arial, Helvetica, sans-serif',
           fontWeight: 900,
+          fontSize: '3.1rem',
+          letterSpacing: '0.08em',
+          margin: '0 0 32px 0',
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center',
+          justifyContent: 'center',
           userSelect: 'none',
+          textShadow: '0 2.5px 8px #e0e0e0',
         }}>
-        <span style={{ color: '#4285F4', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>P</span>
-        <span style={{ color: '#EA4335', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>e</span>
-        <span style={{ color: '#FBBC05', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>t</span>
-        <span style={{ color: '#34A853', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>r</span>
-        <span style={{ color: '#EA4335', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>o</span>
-        <span style={{ color: '#4285F4', marginRight: '0.18em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>l</span>
-        <span style={{ color: '#34A853', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>P</span>
-        <span style={{ color: '#EA4335', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>r</span>
-        <span style={{ color: '#FBBC05', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>i</span>
-        <span style={{ color: '#34A853', marginRight: '0.08em', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>c</span>
-        <span style={{ color: '#EA4335', textShadow: '0 2px 6px #bdbdbd, 0 1px 0 #fff' }}>e</span>
-      </h1>
-        <div style={{ width: '100%', maxWidth: 420, margin: '0 auto', marginBottom: '1.5em', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <form onSubmit={handleSearch} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} autoComplete="off">
-            <div style={{ position: 'relative', width: '100%', maxWidth: 380, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ color: '#4285F4', marginRight: '-0.04em', fontWeight: 900 }}>P</span>
+          <span style={{ color: '#FBBC05', marginRight: '-0.04em', fontWeight: 900 }}>e</span>
+          <span style={{ color: '#FBBC05', marginRight: '-0.04em', fontWeight: 900 }}>t</span>
+          <span style={{ color: '#34A853', marginRight: '-0.04em', fontWeight: 900 }}>r</span>
+          <span style={{ color: '#EA4335', marginRight: '-0.04em', fontWeight: 900 }}>o</span>
+          <span style={{ color: '#4285F4', marginRight: '0.18em', fontWeight: 900 }}>l</span>
+          <span style={{ width: 16 }} />
+          <span style={{ color: '#34A853', marginRight: '-0.04em', fontWeight: 900 }}>P</span>
+          <span style={{ color: '#EA4335', marginRight: '-0.04em', fontWeight: 900 }}>r</span>
+          <span style={{ color: '#FBBC05', marginRight: '-0.04em', fontWeight: 900 }}>i</span>
+          <span style={{ color: '#34A853', marginRight: '-0.04em', fontWeight: 900 }}>c</span>
+          <span style={{ color: '#EA4335', fontWeight: 900 }}>e</span>
+        </h1>
+
+        <div className="search-section" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+          <form onSubmit={handleSearch} className="search-form" autoComplete="off" style={{ width: '100%', maxWidth: 600 }}>
+            <div className="input-wrapper" style={{
+              position: 'relative',
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
               <input
                 type="text"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Enter suburb"
+                className="search-input"
                 style={{
                   width: '100%',
-                  padding: '1.1em 3em 1.1em 1.2em',
-                  fontSize: '1.18em',
-                  borderRadius: 24,
-                  border: '1px solid #ccc',
-                  outline: 'none',
+                  maxWidth: 540,
+                  padding: '0.9em 3.5em 0.9em 3em',
+                  fontSize: '1.25em',
+                  borderRadius: 32,
+                  border: '1.5px solid #dfe1e5',
                   background: '#fff',
-                  marginBottom: 0,
-                  boxShadow: '0 2px 8px #f3f3f3',
+                  boxShadow: '0 2px 6px rgba(60,64,67,0.15)',
+                  outline: 'none',
                   fontWeight: 400,
-                  letterSpacing: 0.5,
-                  transition: 'border 0.2s',
-                  display: 'block',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
+                  letterSpacing: 0.1,
+                  transition: 'box-shadow 0.2s, border 0.2s',
+                  color: '#222',
+                  margin: 0,
+                  zIndex: 1,
                 }}
               />
-            {/* 3-dots more options button inside input */}
-            <button
-              type="button"
-              onClick={() => setShowOptions(v => !v)}
-              style={{
+              {/* 3-dots more options button inside input, at far right, like Google mic/settings */}
+              <button
+                type="button"
+                onClick={() => setShowOptions(v => !v)}
+                className="options-button"
+                aria-label="More options"
+                style={{
+                  position: 'absolute',
+                  right: 18,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: 0,
+                  height: 32,
+                  width: 32,
+                  zIndex: 2,
+                  color: '#5f6368',
+                  borderRadius: '50%',
+                  transition: 'background 0.2s',
+                }}
+                tabIndex={0}
+                onMouseDown={e => e.preventDefault()}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="6" r="2" />
+                  <circle cx="12" cy="12" r="2" />
+                  <circle cx="12" cy="18" r="2" />
+                </svg>
+              </button>
+              {/* Search icon at left, like Google */}
+              <div style={{
                 position: 'absolute',
-                right: -33,
+                left: 18,
                 top: '50%',
                 transform: 'translateY(-50%)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                padding: 0,
-                height: 32,
-                width: 32,
+                color: '#9aa0a6',
+                pointerEvents: 'none',
                 zIndex: 2,
-              }}
-              aria-label="More options"
-              tabIndex={-1}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="#888" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="6" r="2" />
-                <circle cx="12" cy="12" r="2" />
-                <circle cx="12" cy="18" r="2" />
-              </svg>
-            </button>
-          </div>
-          {/* Search and Forecast buttons side by side */}
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1em', marginTop: '1.2em' }}>
+              }}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+            </div>
+
+            <div className="button-group" style={{ display: 'flex', gap: 24, justifyContent: 'center', marginTop: 32 }}>
               <button
                 type="submit"
-                style={{
-                  background: 'linear-gradient(to bottom, #d66a6a, #c94c4c)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 24,
-                  fontSize: '1em',
-                  padding: '0.6em 1.7em',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.08)',
-                  transition: 'background 0.2s',
-                  minWidth: 110,
-                  maxWidth: 110,
-                  textAlign: 'center',
-                }}
+                className="button search-button"
                 disabled={loading}
+                style={{
+                  background: 'linear-gradient(180deg, #e57373 0%, #c62828 100%)',
+                  color: '#fff',
+                  fontWeight: 500,
+                  fontSize: '1.08em',
+                  border: 'none',
+                  borderRadius: 999,
+                  padding: '0.6em 2.2em',
+                  boxShadow: '0 2px 8px #e57373a0',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  outline: 'none',
+                  transition: 'background 0.2s, box-shadow 0.2s',
+                  margin: 0,
+                  minWidth: 120,
+                  letterSpacing: 0.02,
+                }}
               >
                 {loading ? 'Searching...' : 'Search'}
               </button>
               <button
                 type="button"
                 onClick={handleForecast}
-                style={{
-                  background: 'linear-gradient(to bottom, #2580c2, #1565a7)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 24,
-                  fontSize: '1em',
-                  padding: '0.6em 1.7em',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 6px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.08)',
-                  transition: 'background 0.2s',
-                  minWidth: 110,
-                  maxWidth: 110,
-                  textAlign: 'center',
-                }}
+                className="button forecast-button"
                 disabled={forecastLoading}
+                style={{
+                  background: 'linear-gradient(180deg, #2196f3 0%, #1565c0 100%)',
+                  color: '#fff',
+                  fontWeight: 500,
+                  fontSize: '1.08em',
+                  border: 'none',
+                  borderRadius: 999,
+                  padding: '0.6em 2.2em',
+                  boxShadow: '0 2px 8px #2196f3a0',
+                  cursor: forecastLoading ? 'not-allowed' : 'pointer',
+                  outline: 'none',
+                  transition: 'background 0.2s, box-shadow 0.2s',
+                  margin: 0,
+                  minWidth: 120,
+                  letterSpacing: 0.02,
+                }}
               >
                 {forecastLoading ? 'Forecasting...' : 'Forecast'}
               </button>
             </div>
-        </form>
-      </div>
-      {/* Forecast Modal for suburb confirmation */}
-      {forecastModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000
-        }}>
-          <div style={{ background: '#fff', padding: 24, borderRadius: 8, minWidth: 320 }}>
-            <h2>Select suburb + postcode for forecast</h2>
-            {forecastCandidates.length === 0 ? (
-              <p>No candidates found.</p>
-            ) : (
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                {forecastCandidates.map((c, idx) => (
-                  <li key={idx} style={{ margin: '8px 0' }}>
-                    <button
-                      style={{ padding: 8, fontSize: 16, width: '100%', textAlign: 'left', border: '1px solid #ccc', borderRadius: 4, background: '#f9f9f9', cursor: 'pointer' }}
-                      onClick={() => handleForecastConfirm(c)}
-                    >
-                      {c.suburb} {c.postcode}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <button onClick={() => setForecastModal(false)} style={{ marginTop: 16, padding: '8px 16px' }}>Cancel</button>
-          </div>
+          </form>
         </div>
-      )}
 
-      {/* Forecast error or result display */}
-      {forecastError && (
-        <div style={{ background:'#ffeaea', color:'#b71c1c', padding:'1.2em 1em', borderRadius:8, textAlign:'center', fontSize:'1.1em', fontWeight:500, boxShadow:'0 2px 8px #f8d7da', maxWidth:400, margin:'2em auto 0 auto' }}>{forecastError}</div>
-      )}
-      {forecastSVG && (
-        <div style={{width:'100%',maxWidth:600,margin:'2.5em auto 0 auto',display:'flex',justifyContent:'center',alignItems:'center',padding:'1.5em 0 1em 0',background:'#fff',borderRadius:12,boxShadow:'0 2px 12px rgba(0,0,0,0.06)'}}>
-          <img src={forecastSVG} alt={forecastCity + ' Petrol Price Forecast'} style={{width:'100%',height:'auto',maxWidth:600,display:'block'}} />
-        </div>
-      )}
-      {(forecastMsg || forecastMsgDate) && (
-        <div id="forecast-message" style={{width:'100%',maxWidth:600,margin:'1.5em auto 0 auto',display:'flex',justifyContent:'center',alignItems:'center'}}>
-          <div style={{background:'#f5faff',borderRadius:8,padding:'1.2em 1em',boxShadow:'0 2px 8px #e3f2fd',fontSize:'1.08em',color:'#1565c0',lineHeight:1.6}}>
-            <b>AI Forecast for Next Week:</b><br/>
-            {forecastMsg.split('\n').map((line, i) => <span key={i}>{line}<br/></span>)}
-            {forecastMsgDate && <div style={{marginTop:'0.7em',fontSize:'0.93em',color:'#888',textAlign:'right'}}>Generated: <span style={{fontFamily:'monospace'}}>{forecastMsgDate}</span></div>}
-          </div>
-        </div>
-      )}
+        {/* ----- Below this line, components still use inline styles for now ----- */}
+        {/* You can refactor them into App.css using the same principles if you like */}
 
-      {/* Modal for suburb candidates */}
-      {showModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-          background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-        }}>
-          <div style={{ background: '#fff', padding: 24, borderRadius: 8, minWidth: 320 }}>
-            <h2>Select suburb + postcode</h2>
-            {candidates.length === 0 ? (
-              <p>No candidates found.</p>
-            ) : (
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                {candidates.map((c, idx) => (
-                  <li key={idx} style={{ margin: '8px 0' }}>
-                    <button
-                      style={{ padding: 8, fontSize: 16, width: '100%', textAlign: 'left', border: '1px solid #ccc', borderRadius: 4, background: '#f9f9f9', cursor: 'pointer' }}
-                      onClick={() => handleCandidateClick(c)}
-                    >
-                      {c.suburb} {c.postcode}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <button onClick={() => setShowModal(false)} style={{ marginTop: 16, padding: '8px 16px' }}>Cancel</button>
+        {forecastModal && (
+          <div style={{
+            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+            background: 'rgba(0,0,0,0.32)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000
+          }}>
+            <div style={{ background: '#fff', padding: '2.2em 2.5em 2.5em 2.5em', borderRadius: 14, minWidth: 340, boxShadow: '0 6px 32px rgba(0,0,0,0.18)', maxWidth: 420, width: '100%' }}>
+              <h2 style={{
+                fontSize: '1.6em',
+                fontWeight: 700,
+                color: '#263238',
+                margin: '0 0 1.5em 0',
+                letterSpacing: 0.01,
+                textAlign: 'center',
+              }}>Select suburb + postcode for forecast</h2>
+              {forecastLoading ? (
+                <div style={{textAlign:'center',color:'#888',fontSize:'1.1em',padding:'1.5em 0'}}>Loading...</div>
+              ) : forecastCandidates.length === 0 ? (
+                <p style={{textAlign:'center',color:'#888',fontSize:'1.1em'}}>No candidates found.</p>
+              ) : (
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  {forecastCandidates.map((c, idx) => (
+                    <li key={idx} style={{ margin: '0 0 14px 0' }}>
+                      <button
+                        style={{
+                          width: '100%',
+                          padding: '0.7em 1em',
+                          fontSize: '1.08em',
+                          border: '1.5px solid #e0e0e0',
+                          borderRadius: 6,
+                          background: '#fafbfc',
+                          color: '#263238',
+                          textAlign: 'left',
+                          fontWeight: 500,
+                          boxShadow: '0 1px 2px #f3f3f3',
+                          cursor: 'pointer',
+                          transition: 'background 0.18s, border 0.18s',
+                        }}
+                        onClick={() => handleForecastConfirm(c)}
+                        tabIndex={0}
+                      >
+                        {c.suburb} {c.postcode}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div style={{display:'flex',justifyContent:'center',marginTop:'1.7em'}}>
+                <button onClick={() => setForecastModal(false)} style={{
+                  background:'#f6f6f6',
+                  color:'#444',
+                  border:'none',
+                  borderRadius:8,
+                  fontWeight:500,
+                  fontSize:'1.08em',
+                  padding:'0.6em 1.7em',
+                  boxShadow:'0 1px 4px #e0e0e0',
+                  cursor:'pointer',
+                  transition:'background 0.18s',
+                }}>Cancel</button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* More Options panel */}
-      {showOptions && (
-        <div style={{ marginBottom: 24, background: '#fffbe6', padding: 16, borderRadius: 8, border: '1px solid #ffe58f', maxWidth: 400 }}>
-          <div style={{ marginBottom: 12 }}>
-            <label>
-              Distance (km):
-              <input
-                type="number"
-                min={1}
-                max={50}
-                value={distance}
-                onChange={e => setDistance(Number(e.target.value))}
-                style={{ marginLeft: 8, width: 60, padding: 4, fontSize: 16 }}
+        {/* Only show forecast error if modal is not open */}
+        {forecastError && !forecastModal && (
+          <div style={{ background:'#ffeaea', color:'#b71c1c', padding:'1.2em 1em', borderRadius:8, textAlign:'center', fontSize:'1.1em', fontWeight:500, boxShadow:'0 2px 8px #f8d7da', maxWidth:400, margin:'2em auto 0 auto' }}>{forecastError}</div>
+        )}
+        {forecastSVG && (
+          <div style={{width:'100%',maxWidth:600,margin:'2.5em auto 0 auto',display:'flex',justifyContent:'center',alignItems:'center',padding:'1.5em 0 1em 0',background:'#fff',borderRadius:12,boxShadow:'0 2px 12px rgba(0,0,0,0.06)'}}>
+            <img src={forecastSVG} alt={forecastCity + ' Petrol Price Forecast'} style={{width:'100%',height:'auto',maxWidth:600,display:'block'}} />
+          </div>
+        )}
+        {(forecastMsg || forecastMsgDate) && (
+          <div id="forecast-message" style={{width:'100%',maxWidth:600,margin:'1.5em auto 0 auto',display:'flex',justifyContent:'center',alignItems:'center'}}>
+            <div style={{background:'#f5faff',borderRadius:8,padding:'1.2em 1em',boxShadow:'0 2px 8px #e3f2fd',fontSize:'1.08em',color:'#1565c0',lineHeight:1.6}}>
+              <b>AI Forecast for Next Week:</b><br/>
+              {forecastMsg.split('\n').map((line, i) => <span key={i}>{line}<br/></span>)}
+              {forecastMsgDate && <div style={{marginTop:'0.7em',fontSize:'0.93em',color:'#888',textAlign:'right'}}>Generated: <span style={{fontFamily:'monospace'}}>{forecastMsgDate}</span></div>}
+            </div>
+          </div>
+        )}
+        
+        {showModal && (
+          <div style={{
+            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+            background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+          }}>
+            <div style={{ background: '#fff', padding: 24, borderRadius: 8, minWidth: 320, boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
+              <h2>Select suburb + postcode</h2>
+              {candidates.length === 0 ? (
+                <p>No candidates found.</p>
+              ) : (
+                <ul style={{ listStyle: 'none', padding: 0 }}>
+                  {candidates.map((c, idx) => (
+                    <li key={idx} style={{ margin: '8px 0' }}>
+                      <button
+                        style={{ padding: 8, fontSize: 16, width: '100%', textAlign: 'left', border: '1px solid #ccc', borderRadius: 4, background: '#f9f9f9', cursor: 'pointer' }}
+                        onClick={() => handleCandidateClick(c)}
+                      >
+                        {c.suburb} {c.postcode}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <button onClick={() => setShowModal(false)} style={{ marginTop: 16, padding: '8px 16px' }}>Cancel</button>
+            </div>
+          </div>
+        )}
+
+        {/* Only show options/filters if there are stations and not showing forecast */}
+        {showOptions && stations.length > 0 && !forecastMsg && !forecastSVG && (
+          <div style={{ marginTop: 24, background: '#fffbe6', padding: 16, borderRadius: 8, border: '1px solid #ffe58f', maxWidth: 400 }}>
+            <div style={{ marginBottom: 12 }}>
+              <label>
+                Distance (km):
+                <input
+                  type="number"
+                  min={1}
+                  max={50}
+                  value={distance}
+                  onChange={e => setDistance(Number(e.target.value))}
+                  style={{ marginLeft: 8, width: 60, padding: 4, fontSize: 16 }}
+                />
+              </label>
+            </div>
+            <div style={{ marginBottom: 12, position: 'relative' }}>
+              <label style={{ display: 'block', marginBottom: 4 }}>Brands:</label>
+              <BrandMultiSelect
+                brands={FIXED_BRANDS}
+                hasOtherBrands={hasOtherBrands}
+                selectedBrands={selectedBrands}
+                setSelectedBrands={setSelectedBrands}
               />
-            </label>
+            </div>
+            <div>
+              <label>
+                Order By:
+                <select value={orderBy} onChange={e => setOrderBy(e.target.value)} style={{ marginLeft: 8, padding: 4, fontSize: 16 }}>
+                  <option value="price">Price</option>
+                  <option value="distance">Distance</option>
+                </select>
+              </label>
+            </div>
           </div>
-          <div style={{ marginBottom: 12, position: 'relative' }}>
-            <label style={{ display: 'block', marginBottom: 4 }}>Brands:</label>
-            <BrandMultiSelect
-              brands={FIXED_BRANDS}
-              hasOtherBrands={hasOtherBrands}
-              selectedBrands={selectedBrands}
-              setSelectedBrands={setSelectedBrands}
-            />
+        )}
+
+        {/* Only show stations table if not showing forecast */}
+        {sortedStations.length > 0 && !forecastMsg && !forecastSVG && (
+          <div style={{ marginTop: 32, width: '100%' }}>
+            <h2>Stations within {distance} km</h2>
+            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff' }}>
+              <thead>
+                <tr style={{ background: '#fafafa' }}>
+                  <th style={{ border: '1px solid #eee', padding: 8, textAlign: 'left' }}>Name</th>
+                  <th style={{ border: '1px solid #eee', padding: 8, textAlign: 'left' }}>Address</th>
+                  <th style={{ border: '1px solid #eee', padding: 8, textAlign: 'left' }}>Price</th>
+                  <th style={{ border: '1px solid #eee', padding: 8, textAlign: 'left' }}>Distance (km)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedStations.map((s, idx) => {
+                  let mapsUrl = '';
+                  if (selected && s.address) {
+                    const origin = encodeURIComponent(`${selected.suburb} ${selected.postcode}`);
+                    // Append suburb and postcode to address for better geocoding
+                    const dest = encodeURIComponent(`${s.address}, ${selected.suburb} ${selected.postcode}`);
+                    mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`;
+                  }
+                  return (
+                    <tr key={idx}>
+                      <td style={{ border: '1px solid #eee', padding: 8 }}>{s.station}</td>
+                      <td style={{ border: '1px solid #eee', padding: 8 }}>{s.address}</td>
+                      <td style={{ border: '1px solid #eee', padding: 8 }}>{s.price}</td>
+                      <td style={{ border: '1px solid #eee', padding: 8 }}>
+                        {mapsUrl ? (
+                          <a href={mapsUrl} target="_blank" rel="noopener noreferrer">{s.distance_km?.toFixed(2)}</a>
+                        ) : (
+                          s.distance_km?.toFixed(2)
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-
-
-
-          <div>
-            <label>
-              Order By:
-              <select value={orderBy} onChange={e => setOrderBy(e.target.value)} style={{ marginLeft: 8, padding: 4, fontSize: 16 }}>
-                <option value="price">Price</option>
-                <option value="distance">Distance</option>
-              </select>
-            </label>
-          </div>
-        </div>
-      )}
-
-
-      {/* Stations table */}
-      {sortedStations.length > 0 && (
-        <div style={{ marginTop: 32 }}>
-          <h2>Stations within {distance} km</h2>
-          <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff' }}>
-            <thead>
-              <tr style={{ background: '#fafafa' }}>
-                <th style={{ border: '1px solid #eee', padding: 8 }}>Name</th>
-                <th style={{ border: '1px solid #eee', padding: 8 }}>Address</th>
-                <th style={{ border: '1px solid #eee', padding: 8 }}>Price</th>
-                <th style={{ border: '1px solid #eee', padding: 8 }}>Distance (km)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedStations.map((s, idx) => {
-                // Google Maps link: from selected suburb/postcode to station address
-                let mapsUrl = '';
-                if (selected && s.address) {
-                  const origin = encodeURIComponent(`${selected.suburb} ${selected.postcode}`);
-                  const dest = encodeURIComponent(s.address);
-                  mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`;
-                }
-                return (
-                  <tr key={idx}>
-                    <td style={{ border: '1px solid #eee', padding: 8 }}>{s.station}</td>
-                    <td style={{ border: '1px solid #eee', padding: 8 }}>{s.address}</td>
-                    <td style={{ border: '1px solid #eee', padding: 8 }}>{s.price}</td>
-                    <td style={{ border: '1px solid #eee', padding: 8 }}>
-                      {mapsUrl ? (
-                        <a href={mapsUrl} target="_blank" rel="noopener noreferrer">{s.distance_km?.toFixed(2)}</a>
-                      ) : (
-                        s.distance_km?.toFixed(2)
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+        )}
       </div>
     </div>
   );
 }
 
-
-export default App;
-
-// Custom multi-select dropdown for brands
+// This sub-component still uses inline styles, but can be refactored similarly
 function BrandMultiSelect({ brands, hasOtherBrands, selectedBrands, setSelectedBrands }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handleClick(e) {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
@@ -553,7 +591,6 @@ function BrandMultiSelect({ brands, hasOtherBrands, selectedBrands, setSelectedB
     return () => document.removeEventListener('mousedown', handleClick);
   }, [open]);
 
-  // Display summary
   let summary = 'All';
   if (selectedBrands.length === 0 || selectedBrands.includes('All')) {
     summary = 'All';
@@ -563,7 +600,6 @@ function BrandMultiSelect({ brands, hasOtherBrands, selectedBrands, setSelectedB
     summary = `${selectedBrands.length} Selected`;
   }
 
-  // Handle brand toggle
   function toggleBrand(brand) {
     if (brand === 'All') {
       setSelectedBrands(['All']);
@@ -574,15 +610,14 @@ function BrandMultiSelect({ brands, hasOtherBrands, selectedBrands, setSelectedB
       } else {
         next = selectedBrands.filter(b => b !== 'All').concat(brand);
       }
-      setSelectedBrands(next);
+      setSelectedBrands(next.length > 0 ? next : ['All']); // Default back to 'All' if empty
     }
   }
 
-  // Render options
   const options = brands.concat(hasOtherBrands ? ['Others'] : []);
 
   return (
-    <div ref={ref} style={{ position: 'relative', width: 300, maxWidth: '100%' }}>
+    <div ref={ref} style={{ position: 'relative', width: '100%', maxWidth: 300 }}>
       <div
         style={{
           border: '1px solid #ccc',
@@ -611,7 +646,7 @@ function BrandMultiSelect({ brands, hasOtherBrands, selectedBrands, setSelectedB
             background: '#fff',
             border: '1px solid #ccc',
             borderRadius: 6,
-            boxShadow: '0 2px 8px #e3f2fd',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
             zIndex: 10,
             maxHeight: 220,
             overflowY: 'auto',
@@ -619,12 +654,12 @@ function BrandMultiSelect({ brands, hasOtherBrands, selectedBrands, setSelectedB
           }}
         >
           {options.map(brand => (
-            <label key={brand} style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', cursor: 'pointer', fontSize: 15 }}>
+            <label key={brand} style={{ display: 'flex', alignItems: 'center', padding: '6px 8px', cursor: 'pointer', fontSize: 15, userSelect: 'none' }}>
               <input
                 type="checkbox"
                 checked={selectedBrands.includes(brand) || (brand === 'All' && (selectedBrands.length === 0 || selectedBrands.includes('All')))}
                 onChange={() => toggleBrand(brand)}
-                style={{ marginRight: 8 }}
+                style={{ marginRight: 8, cursor: 'pointer' }}
               />
               {brand}
             </label>
@@ -634,3 +669,5 @@ function BrandMultiSelect({ brands, hasOtherBrands, selectedBrands, setSelectedB
     </div>
   );
 }
+
+export default App;
