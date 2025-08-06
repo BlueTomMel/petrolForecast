@@ -614,6 +614,10 @@ function App() {
                     ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
                     : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
                   }>Price</th>
+                <th style={isDark
+                  ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
+                  : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
+                }>Changes</th>
                   <th style={isDark
                     ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
                     : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
@@ -643,16 +647,56 @@ function App() {
                         ? { border: '1px solid #444', padding: 8, color: '#fff' }
                         : { border: '1px solid #eee', padding: 8, color: '#222' }
                       }>{s.price}</td>
+                          <td style={{
+                            border: isDark ? '1px solid #444' : '1px solid #eee',
+                            padding: 8,
+                            color: (() => {
+                              if (typeof s.changes === 'undefined' || s.changes === null || s.changes === '0c' || s.changes === 0 || s.changes === '-0c') return isDark ? '#222' : '#222';
+                              if (typeof s.changes === 'string' && s.changes.startsWith('+')) return '#d32f2f';
+                              if (typeof s.changes === 'string' && s.changes.startsWith('-')) return '#388e3c';
+                              if (typeof s.changes === 'number' && s.changes > 0) return '#d32f2f';
+                              if (typeof s.changes === 'number' && s.changes < 0) return '#388e3c';
+                              return isDark ? '#fff' : '#222';
+                            })(),
+                            fontWeight: 600,
+                            textAlign: 'left'
+                          }}>
+                            {(!s.changes || s.changes.toString().toLowerCase() === '0c' || s.changes === 0 || s.changes === '-0c') ? <span style={{ color: '#222' }}>-</span>
+                              : s.changes}
+                          </td>
                       <td style={isDark
                         ? { border: '1px solid #444', padding: 8, color: '#82aaff', fontWeight: 600 }
                         : { border: '1px solid #eee', padding: 8, color: '#1976d2', fontWeight: 600 }
                       }>
                         {mapsUrl ? (
-                          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={isDark ? { color: '#82aaff' } : { color: '#1976d2' }}>{s.distance_km?.toFixed(2)}</a>
+                          <a
+                            href={mapsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Directions (Google Maps)"
+                            style={{
+                              color: isDark ? '#82aaff' : '#1976d2',
+                              textDecoration: 'underline',
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: 4,
+                              fontWeight: 600,
+                              transition: 'background 0.15s',
+                              borderRadius: 4,
+                              padding: '2px 6px 2px 2px',
+                            }}
+                            onMouseOver={e => e.currentTarget.style.background = isDark ? 'rgba(130,170,255,0.08)' : 'rgba(25,118,210,0.08)'}
+                            onMouseOut={e => e.currentTarget.style.background = 'none'}
+                          >
+                            <img src="/png-transparent-google-maps-pin-location-thumbnail.png" alt="Google Maps Pin" style={{ width: 16, height: 16, marginRight: 4, display: 'inline', verticalAlign: 'middle' }} />
+                            {s.distance_km?.toFixed(2)}
+                          </a>
                         ) : (
                           s.distance_km?.toFixed(2)
                         )}
                       </td>
+                      {/* Removed unused last column */}
                     </tr>
                   );
                 })}
