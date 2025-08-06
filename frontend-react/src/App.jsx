@@ -3,6 +3,16 @@ import './App.css'; // Import the new CSS file
 
 function App() {
   // All your state declarations remain the same
+  // Detect dark mode
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    setIsDark(mq.matches);
+    const handler = e => setIsDark(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  // All your state declarations remain the same
   const [search, setSearch] = useState('');
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -145,15 +155,27 @@ function App() {
     setForecastMsgDate('');
     setForecastCity('');
     setForecastCandidates([]);
-    setForecastModal(true);
+    setForecastModal(false);
     setForecastLoading(true);
     try {
       const res = await fetch(`http://127.0.0.1:5000/api/suburb_candidates?suburb=${encodeURIComponent(search)}`);
       const data = await res.json();
       const candidates = data.candidates || [];
       setForecastCandidates(candidates);
+      if (candidates.length === 1) {
+        // If only one candidate, immediately show forecast for that suburb's capital city
+        setSearch(`${candidates[0].suburb} ${candidates[0].postcode}`);
+        await handleForecastConfirm(candidates[0]);
+      } else if (candidates.length > 1) {
+        // If multiple, show modal for user to select
+        setForecastModal(true);
+      } else {
+        // No candidates found, show modal with no results
+        setForecastModal(true);
+      }
     } catch (e) {
       setForecastCandidates([]);
+      setForecastModal(true);
     }
     setForecastLoading(false);
   }
@@ -174,6 +196,7 @@ function App() {
   }
 
   async function handleForecastConfirm(candidate) {
+    setSearch(`${candidate.suburb} ${candidate.postcode}`);
     setForecastLoading(true);
     setForecastError('');
     setForecastSVG(null);
@@ -470,18 +493,37 @@ function App() {
         {showModal && (
           <div style={{
             position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-            background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+            background: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
           }}>
-            <div style={{ background: '#fff', padding: 24, borderRadius: 8, minWidth: 320, boxShadow: '0 4px 20px rgba(0,0,0,0.15)' }}>
-              <h2>Select suburb + postcode</h2>
+            <div style={{
+              background: isDark ? '#232323' : '#fff',
+              padding: 24,
+              borderRadius: 8,
+              minWidth: 320,
+              boxShadow: isDark ? '0 4px 24px #000a' : '0 4px 20px rgba(0,0,0,0.15)',
+              color: isDark ? '#f3f3f3' : '#222',
+              border: isDark ? '1.5px solid #444' : undefined
+            }}>
+              <h2 style={{ color: isDark ? '#fff' : undefined }}>Select suburb + postcode</h2>
               {candidates.length === 0 ? (
-                <p>No candidates found.</p>
+                <p style={{ color: isDark ? '#ccc' : undefined }}>No candidates found.</p>
               ) : (
                 <ul style={{ listStyle: 'none', padding: 0 }}>
                   {candidates.map((c, idx) => (
                     <li key={idx} style={{ margin: '8px 0' }}>
                       <button
-                        style={{ padding: 8, fontSize: 16, width: '100%', textAlign: 'left', border: '1px solid #ccc', borderRadius: 4, background: '#f9f9f9', cursor: 'pointer' }}
+                        style={{
+                          padding: 8,
+                          fontSize: 16,
+                          width: '100%',
+                          textAlign: 'left',
+                          border: isDark ? '1.5px solid #444' : '1px solid #ccc',
+                          borderRadius: 4,
+                          background: isDark ? '#181818' : '#f9f9f9',
+                          color: isDark ? '#fff' : '#222',
+                          cursor: 'pointer',
+                          transition: 'background 0.18s, border 0.18s',
+                        }}
                         onClick={() => handleCandidateClick(c)}
                       >
                         {c.suburb} {c.postcode}
@@ -490,7 +532,22 @@ function App() {
                   ))}
                 </ul>
               )}
-              <button onClick={() => setShowModal(false)} style={{ marginTop: 16, padding: '8px 16px' }}>Cancel</button>
+              <button
+                onClick={() => setShowModal(false)}
+                style={{
+                  marginTop: 16,
+                  padding: '8px 16px',
+                  background: isDark ? '#181818' : '#f6f6f6',
+                  color: isDark ? '#fff' : '#444',
+                  border: isDark ? '1.5px solid #444' : 'none',
+                  borderRadius: 8,
+                  fontWeight: 500,
+                  fontSize: '1.08em',
+                  boxShadow: isDark ? '0 1px 4px #111' : '0 1px 4px #e0e0e0',
+                  cursor: 'pointer',
+                  transition: 'background 0.18s',
+                }}
+              >Cancel</button>
             </div>
           </div>
         )}
@@ -535,14 +592,29 @@ function App() {
         {/* Only show stations table if not showing forecast */}
         {sortedStations.length > 0 && !forecastMsg && !forecastSVG && (
           <div style={{ marginTop: 32, width: '100%' }}>
-            <h2>Stations within {distance} km</h2>
-            <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff' }}>
+            <h2 style={isDark ? { color: '#fff', textShadow: '0 2px 8px #222' } : {}}>Stations within {distance} km</h2>
+            <table style={isDark
+              ? { width: '100%', borderCollapse: 'collapse', background: 'rgba(30,30,30,0.98)' }
+              : { width: '100%', borderCollapse: 'collapse', background: '#fff' }
+            }>
               <thead>
-                <tr style={{ background: '#fafafa' }}>
-                  <th style={{ border: '1px solid #eee', padding: 8, textAlign: 'left' }}>Name</th>
-                  <th style={{ border: '1px solid #eee', padding: 8, textAlign: 'left' }}>Address</th>
-                  <th style={{ border: '1px solid #eee', padding: 8, textAlign: 'left' }}>Price</th>
-                  <th style={{ border: '1px solid #eee', padding: 8, textAlign: 'left' }}>Distance (km)</th>
+                <tr style={isDark ? { background: 'rgba(60,60,60,0.98)' } : { background: '#fafafa' }}>
+                  <th style={isDark
+                    ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
+                    : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
+                  }>Name</th>
+                  <th style={isDark
+                    ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
+                    : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
+                  }>Address</th>
+                  <th style={isDark
+                    ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
+                    : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
+                  }>Price</th>
+                  <th style={isDark
+                    ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
+                    : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
+                  }>Distance (km)</th>
                 </tr>
               </thead>
               <tbody>
@@ -556,12 +628,24 @@ function App() {
                   }
                   return (
                     <tr key={idx}>
-                      <td style={{ border: '1px solid #eee', padding: 8 }}>{s.station}</td>
-                      <td style={{ border: '1px solid #eee', padding: 8 }}>{s.address}</td>
-                      <td style={{ border: '1px solid #eee', padding: 8 }}>{s.price}</td>
-                      <td style={{ border: '1px solid #eee', padding: 8 }}>
+                      <td style={isDark
+                        ? { border: '1px solid #444', padding: 8, color: '#fff' }
+                        : { border: '1px solid #eee', padding: 8, color: '#222' }
+                      }>{s.station}</td>
+                      <td style={isDark
+                        ? { border: '1px solid #444', padding: 8, color: '#fff' }
+                        : { border: '1px solid #eee', padding: 8, color: '#222' }
+                      }>{s.address}</td>
+                      <td style={isDark
+                        ? { border: '1px solid #444', padding: 8, color: '#fff' }
+                        : { border: '1px solid #eee', padding: 8, color: '#222' }
+                      }>{s.price}</td>
+                      <td style={isDark
+                        ? { border: '1px solid #444', padding: 8, color: '#82aaff', fontWeight: 600 }
+                        : { border: '1px solid #eee', padding: 8, color: '#1976d2', fontWeight: 600 }
+                      }>
                         {mapsUrl ? (
-                          <a href={mapsUrl} target="_blank" rel="noopener noreferrer">{s.distance_km?.toFixed(2)}</a>
+                          <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={isDark ? { color: '#82aaff' } : { color: '#1976d2' }}>{s.distance_km?.toFixed(2)}</a>
                         ) : (
                           s.distance_km?.toFixed(2)
                         )}
