@@ -556,23 +556,52 @@ function App() {
         )}
 
         {/* Only show options/filters if there are stations and not showing forecast */}
-        {showOptions && stations.length > 0 && !forecastMsg && !forecastSVG && (
-          <div style={{ marginTop: 24, background: '#fffbe6', padding: 16, borderRadius: 8, border: '1px solid #ffe58f', maxWidth: 400 }}>
-            <div style={{ marginBottom: 12 }}>
-              <label>
-                Distance (km):
-                <input
-                  type="number"
-                  min={1}
-                  max={50}
-                  value={distance}
-                  onChange={e => setDistance(Number(e.target.value))}
-                  style={{ marginLeft: 8, width: 60, padding: 4, fontSize: 16 }}
-                />
-              </label>
+        {showOptions && !forecastMsg && !forecastSVG && (
+          <div style={{
+            marginTop: 28,
+            background: '#fff',
+            padding: '24px 24px 18px 24px',
+            borderRadius: 16,
+            boxShadow: '0 4px 24px rgba(60,64,67,0.10)',
+            maxWidth: 900,
+            width: '100%',
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            border: '1.5px solid #f0f0f0',
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 32,
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            {/* Distance */}
+            <div style={{ display: 'flex', flexDirection: 'column', minWidth: 180, flex: 1, maxWidth: 220 }}>
+              <label htmlFor="distance-input" style={{ fontWeight: 500, color: '#333', fontSize: 16, marginBottom: 7 }}>Distance (km):</label>
+              <input
+                id="distance-input"
+                type="number"
+                min={1}
+                max={50}
+                value={distance}
+                onChange={e => setDistance(Number(e.target.value))}
+                style={{
+                  width: '100%',
+                  padding: '9px 14px',
+                  fontSize: 16,
+                  border: '1.5px solid #dfe1e5',
+                  borderRadius: 8,
+                  background: '#fafbfc',
+                  color: '#222',
+                  outline: 'none',
+                  boxShadow: '0 1px 2px #f3f3f3',
+                  transition: 'border 0.18s',
+                }}
+              />
             </div>
-            <div style={{ marginBottom: 12, position: 'relative' }}>
-              <label style={{ display: 'block', marginBottom: 4 }}>Brands:</label>
+            {/* Brands */}
+            <div style={{ display: 'flex', flexDirection: 'column', minWidth: 220, flex: 2, maxWidth: 320 }}>
+              <label htmlFor="brand-select" style={{ fontWeight: 500, color: '#333', fontSize: 16, marginBottom: 7 }}>Brands:</label>
               <BrandMultiSelect
                 brands={FIXED_BRANDS}
                 hasOtherBrands={hasOtherBrands}
@@ -580,14 +609,31 @@ function App() {
                 setSelectedBrands={setSelectedBrands}
               />
             </div>
-            <div>
-              <label>
-                Order By:
-                <select value={orderBy} onChange={e => setOrderBy(e.target.value)} style={{ marginLeft: 8, padding: 4, fontSize: 16 }}>
-                  <option value="price">Price</option>
-                  <option value="distance">Distance</option>
-                </select>
-              </label>
+            {/* Order By */}
+            <div style={{ display: 'flex', flexDirection: 'column', minWidth: 180, flex: 1, maxWidth: 220 }}>
+              <label htmlFor="order-select" style={{ fontWeight: 500, color: '#333', fontSize: 16, marginBottom: 7 }}>Order By:</label>
+              <select
+                id="order-select"
+                value={orderBy}
+                onChange={e => setOrderBy(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '9px 14px',
+                  fontSize: 16,
+                  border: '1.5px solid #dfe1e5',
+                  borderRadius: 8,
+                  background: '#fafbfc',
+                  color: '#222',
+                  outline: 'none',
+                  minWidth: 120,
+                  boxShadow: '0 1px 2px #f3f3f3',
+                  transition: 'border 0.18s',
+                  fontWeight: 500,
+                }}
+              >
+                <option value="price">Price</option>
+                <option value="distance">Distance</option>
+              </select>
             </div>
           </div>
         )}
@@ -614,10 +660,10 @@ function App() {
                     ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
                     : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
                   }>Price</th>
-                <th style={isDark
-                  ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
-                  : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
-                }>Changes</th>
+                  <th style={isDark
+                    ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
+                    : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
+                  }>Changes</th>
                   <th style={isDark
                     ? { border: '1px solid #444', padding: 8, textAlign: 'left', color: '#e0e0e0', fontWeight: 700 }
                     : { border: '1px solid #eee', padding: 8, textAlign: 'left', color: '#222', fontWeight: 700 }
@@ -625,16 +671,21 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {sortedStations.map((s, idx) => {
-                  let mapsUrl = '';
-                  if (selected && s.address) {
-                    const origin = encodeURIComponent(`${selected.suburb} ${selected.postcode}`);
-                    // Append suburb and postcode to address for better geocoding
-                    const dest = encodeURIComponent(`${s.address}, ${selected.suburb} ${selected.postcode}`);
-                    mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${dest}`;
+                {sortedStations.map((s, i) => {
+                  // Build Google Maps Directions URL
+                  let mapsUrl = null;
+                  if (s.lat && s.lng) {
+                    let origin = '';
+                    if (selected && selected.lat && selected.lng) {
+                      origin = `${selected.lat},${selected.lng}`;
+                    } else if (selected && selected.suburb && selected.postcode) {
+                      origin = encodeURIComponent(`${selected.suburb} ${selected.postcode}`);
+                    }
+                    const destination = `${s.lat},${s.lng}`;
+                    mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
                   }
                   return (
-                    <tr key={idx}>
+                    <tr key={s.id || i} style={i % 2 === 0 ? (isDark ? { background: '#23272f' } : { background: '#fff' }) : (isDark ? { background: '#181c23' } : { background: '#f7f7f7' })}>
                       <td style={isDark
                         ? { border: '1px solid #444', padding: 8, color: '#fff' }
                         : { border: '1px solid #eee', padding: 8, color: '#222' }
@@ -647,23 +698,23 @@ function App() {
                         ? { border: '1px solid #444', padding: 8, color: '#fff' }
                         : { border: '1px solid #eee', padding: 8, color: '#222' }
                       }>{s.price}</td>
-                          <td style={{
-                            border: isDark ? '1px solid #444' : '1px solid #eee',
-                            padding: 8,
-                            color: (() => {
-                              if (typeof s.changes === 'undefined' || s.changes === null || s.changes === '0c' || s.changes === 0 || s.changes === '-0c') return isDark ? '#222' : '#222';
-                              if (typeof s.changes === 'string' && s.changes.startsWith('+')) return '#d32f2f';
-                              if (typeof s.changes === 'string' && s.changes.startsWith('-')) return '#388e3c';
-                              if (typeof s.changes === 'number' && s.changes > 0) return '#d32f2f';
-                              if (typeof s.changes === 'number' && s.changes < 0) return '#388e3c';
-                              return isDark ? '#fff' : '#222';
-                            })(),
-                            fontWeight: 600,
-                            textAlign: 'left'
-                          }}>
-                            {(!s.changes || s.changes.toString().toLowerCase() === '0c' || s.changes === 0 || s.changes === '-0c') ? <span style={{ color: '#222' }}>-</span>
-                              : s.changes}
-                          </td>
+                      <td style={{
+                        border: isDark ? '1px solid #444' : '1px solid #eee',
+                        padding: 8,
+                        color: (() => {
+                          if (typeof s.changes === 'undefined' || s.changes === null || s.changes === '0c' || s.changes === 0 || s.changes === '-0c') return isDark ? '#222' : '#222';
+                          if (typeof s.changes === 'string' && s.changes.startsWith('+')) return '#d32f2f';
+                          if (typeof s.changes === 'string' && s.changes.startsWith('-')) return '#388e3c';
+                          if (typeof s.changes === 'number' && s.changes > 0) return '#d32f2f';
+                          if (typeof s.changes === 'number' && s.changes < 0) return '#388e3c';
+                          return isDark ? '#fff' : '#222';
+                        })(),
+                        fontWeight: 600,
+                        textAlign: 'left'
+                      }}>
+                        {(!s.changes || s.changes.toString().toLowerCase() === '0c' || s.changes === 0 || s.changes === '-0c') ? <span style={{ color: '#222' }}>-</span>
+                          : s.changes}
+                      </td>
                       <td style={isDark
                         ? { border: '1px solid #444', padding: 8, color: '#82aaff', fontWeight: 600 }
                         : { border: '1px solid #eee', padding: 8, color: '#1976d2', fontWeight: 600 }
@@ -696,7 +747,6 @@ function App() {
                           s.distance_km?.toFixed(2)
                         )}
                       </td>
-                      {/* Removed unused last column */}
                     </tr>
                   );
                 })}
