@@ -1,4 +1,4 @@
 flask
+requests
 # Add any other packages your backend uses, e.g.:
-# requests
 # pandas
