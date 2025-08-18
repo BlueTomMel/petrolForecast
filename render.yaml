@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: petrol-flask-backend
+    env: python
+    buildCommand: ""
+    startCommand: "python app.py"
+    envVars:
+      - key: FLASK_ENV
+        value: production
+    plan: free
+    autoDeploy: true
+    # If your Flask app is in a subfolder, set rootDir
+
+  - type: static
+    name: petrol-react-frontend
+    env: static
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: frontend-react/build
+    plan: free
+    autoDeploy: true

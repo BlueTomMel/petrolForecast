@@ -1,6 +1,8 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import './App.css'; // Import the new CSS file
 
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://127.0.0.1:5000';
+
 function App() {
   // All your state declarations remain the same
   // Detect dark mode
@@ -50,7 +52,7 @@ function App() {
     setForecastMsgDate('');
     setForecastCity('');
     setForecastError('');
-    fetch(`http://127.0.0.1:5000/api/suburb_candidates?suburb=${encodeURIComponent(search)}`)
+    fetch(`${API_BASE}/api/suburb_candidates?suburb=${encodeURIComponent(search)}`)
       .then(res => res.json())
       .then(data => {
         const candidates = data.candidates || [];
@@ -81,7 +83,7 @@ function App() {
   const fetchStationsForCandidate = (candidate, dist) => {
     if (!candidate) return;
     setStationsLoading(true);
-    fetch(`http://127.0.0.1:5000/api/stations_in_range?suburb=${encodeURIComponent(candidate.suburb)}&postcode=${encodeURIComponent(candidate.postcode)}&distance=${dist}`)
+    fetch(`${API_BASE}/api/stations_in_range?suburb=${encodeURIComponent(candidate.suburb)}&postcode=${encodeURIComponent(candidate.postcode)}&distance=${dist}`)
       .then(res => res.json())
       .then(data => {
         const stationsArr = Array.isArray(data) ? data : (data.stations || []);
@@ -158,7 +160,7 @@ function App() {
     setForecastModal(false);
     setForecastLoading(true);
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/suburb_candidates?suburb=${encodeURIComponent(search)}`);
+      const res = await fetch(`${API_BASE}/api/suburb_candidates?suburb=${encodeURIComponent(search)}`);
       const data = await res.json();
       const candidates = data.candidates || [];
       setForecastCandidates(candidates);
@@ -224,7 +226,7 @@ function App() {
     }
     try {
       // Use 'city' param for /api/forecast, not 'suburb' or 'postcode'
-      const res = await fetch(`http://127.0.0.1:5000/api/forecast?city=${encodeURIComponent(city)}`);
+      const res = await fetch(`${API_BASE}/api/forecast?city=${encodeURIComponent(city)}`);
       const data = await res.json();
       if (data && data.forecast_text) {
         // Show SVG for the capital city if available
@@ -559,25 +561,28 @@ function App() {
         {showOptions && !forecastMsg && !forecastSVG && (
           <div style={{
             marginTop: 28,
-            background: '#fff',
-            padding: '24px 24px 18px 24px',
-            borderRadius: 16,
-            boxShadow: '0 4px 24px rgba(60,64,67,0.10)',
-            maxWidth: 900,
+            background: 'rgba(255,255,255,0.85)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            padding: '28px 32px 22px 32px',
+            borderRadius: 22,
+            boxShadow: '0 8px 32px rgba(60,64,67,0.13)',
+            maxWidth: 950,
             width: '100%',
             marginLeft: 'auto',
             marginRight: 'auto',
-            border: '1.5px solid #f0f0f0',
+            border: '1.5px solid #e3e8f0',
             display: 'flex',
             flexDirection: 'row',
-            gap: 32,
+            gap: 40,
             flexWrap: 'wrap',
-            alignItems: 'center',
+            alignItems: 'flex-end',
             justifyContent: 'center',
+            transition: 'box-shadow 0.2s, background 0.2s',
           }}>
             {/* Distance */}
             <div style={{ display: 'flex', flexDirection: 'column', minWidth: 180, flex: 1, maxWidth: 220 }}>
-              <label htmlFor="distance-input" style={{ fontWeight: 500, color: '#333', fontSize: 16, marginBottom: 7 }}>Distance (km):</label>
+              <label htmlFor="distance-input" style={{ fontWeight: 600, color: '#222', fontSize: 16, marginBottom: 8, letterSpacing: 0.01 }}>Distance (km):</label>
               <input
                 id="distance-input"
                 type="number"
@@ -587,49 +592,56 @@ function App() {
                 onChange={e => setDistance(Number(e.target.value))}
                 style={{
                   width: '100%',
-                  padding: '9px 14px',
-                  fontSize: 16,
-                  border: '1.5px solid #dfe1e5',
-                  borderRadius: 8,
-                  background: '#fafbfc',
+                  padding: '12px 16px',
+                  fontSize: 17,
+                  border: '1.5px solid #d0d7e2',
+                  borderRadius: 10,
+                  background: 'rgba(245,247,250,0.95)',
                   color: '#222',
                   outline: 'none',
-                  boxShadow: '0 1px 2px #f3f3f3',
-                  transition: 'border 0.18s',
+                  boxShadow: '0 1.5px 6px #e3e8f0',
+                  transition: 'border 0.18s, box-shadow 0.18s',
+                  fontWeight: 500,
                 }}
+                onFocus={e => e.target.style.border = '1.5px solid #4285F4'}
+                onBlur={e => e.target.style.border = '1.5px solid #d0d7e2'}
               />
             </div>
             {/* Brands */}
             <div style={{ display: 'flex', flexDirection: 'column', minWidth: 220, flex: 2, maxWidth: 320 }}>
-              <label htmlFor="brand-select" style={{ fontWeight: 500, color: '#333', fontSize: 16, marginBottom: 7 }}>Brands:</label>
-              <BrandMultiSelect
-                brands={FIXED_BRANDS}
-                hasOtherBrands={hasOtherBrands}
-                selectedBrands={selectedBrands}
-                setSelectedBrands={setSelectedBrands}
-              />
+              <label htmlFor="brand-select" style={{ fontWeight: 600, color: '#222', fontSize: 16, marginBottom: 8, letterSpacing: 0.01 }}>Brands:</label>
+              <div style={{ boxShadow: '0 1.5px 6px #e3e8f0', borderRadius: 10, background: 'rgba(245,247,250,0.95)', padding: 2 }}>
+                <BrandMultiSelect
+                  brands={FIXED_BRANDS}
+                  hasOtherBrands={hasOtherBrands}
+                  selectedBrands={selectedBrands}
+                  setSelectedBrands={setSelectedBrands}
+                />
+              </div>
             </div>
             {/* Order By */}
             <div style={{ display: 'flex', flexDirection: 'column', minWidth: 180, flex: 1, maxWidth: 220 }}>
-              <label htmlFor="order-select" style={{ fontWeight: 500, color: '#333', fontSize: 16, marginBottom: 7 }}>Order By:</label>
+              <label htmlFor="order-select" style={{ fontWeight: 600, color: '#222', fontSize: 16, marginBottom: 8, letterSpacing: 0.01 }}>Order By:</label>
               <select
                 id="order-select"
                 value={orderBy}
                 onChange={e => setOrderBy(e.target.value)}
                 style={{
                   width: '100%',
-                  padding: '9px 14px',
-                  fontSize: 16,
-                  border: '1.5px solid #dfe1e5',
-                  borderRadius: 8,
-                  background: '#fafbfc',
+                  padding: '12px 16px',
+                  fontSize: 17,
+                  border: '1.5px solid #d0d7e2',
+                  borderRadius: 10,
+                  background: 'rgba(245,247,250,0.95)',
                   color: '#222',
                   outline: 'none',
                   minWidth: 120,
-                  boxShadow: '0 1px 2px #f3f3f3',
-                  transition: 'border 0.18s',
+                  boxShadow: '0 1.5px 6px #e3e8f0',
+                  transition: 'border 0.18s, box-shadow 0.18s',
                   fontWeight: 500,
                 }}
+                onFocus={e => e.target.style.border = '1.5px solid #4285F4'}
+                onBlur={e => e.target.style.border = '1.5px solid #d0d7e2'}
               >
                 <option value="price">Price</option>
                 <option value="distance">Distance</option>
