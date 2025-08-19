@@ -4,5 +4,6 @@ flask_cors
 selenium
 webdriver_manager
 pandas
+bs4
 # Add any other packages your backend uses, e.g.:
 # pandas
