@@ -19,10 +19,10 @@ services:
     plan: free
     autoDeploy: true
 
-  - type: cron
-    name: petrol-scraper-cron
-    env: python
-    schedule: "0 0 * * *" # runs every day at midnight UTC
-    command: "python scrape_petrol.py"
-    plan: free
-    rootDir: backend
+  # - type: cron
+  #   name: petrol-scraper-cron
+  #   env: python
+  #   schedule: "0 0 * * *" # runs every day at midnight UTC
+  #   command: "python scrape_petrol.py"
+  #   plan: free
+  #   rootDir: backend
