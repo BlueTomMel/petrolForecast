@@ -300,5 +300,8 @@ def get_prices():
     return jsonify(data)
 
 if __name__ == "__main__":
+    # Use PORT env var if set (for hosting), otherwise default to 5000
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    # Use 0.0.0.0 for hosting, 127.0.0.1 for local unless overridden
+    host = os.environ.get("FLASK_HOST", "0.0.0.0" if "PORT" in os.environ else "127.0.0.1")
+    app.run(host=host, port=port, debug=False)
