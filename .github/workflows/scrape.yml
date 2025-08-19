@@ -26,6 +26,6 @@ jobs:
       - name: Ensure backend/data directory exists
         run: mkdir -p backend/data
 
-      - name: Run scraper
-        run: python scrape_petrol.py
-        run: python scrape_petrol.py
+      - name: Run scraper2
+        run: python scrape_petrol.py 
+
