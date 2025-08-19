@@ -1,5 +1,6 @@
 flask
 requests
 flask_cors
+selenium
 # Add any other packages your backend uses, e.g.:
 # pandas
