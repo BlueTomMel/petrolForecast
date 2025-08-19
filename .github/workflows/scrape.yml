@@ -24,8 +24,8 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Ensure backend/data directory exists
-        run: mkdir -p data
-        working-directory: backend
+        run: mkdir -p backend/data
 
       - name: Run scraper
+        run: python scrape_petrol.py
         run: python scrape_petrol.py
