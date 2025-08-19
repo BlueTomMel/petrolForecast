@@ -3,5 +3,6 @@ requests
 flask_cors
 selenium
 webdriver_manager
+pandas
 # Add any other packages your backend uses, e.g.:
 # pandas
