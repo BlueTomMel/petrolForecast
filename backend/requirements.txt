@@ -1,4 +1,5 @@
 flask
 requests
+flask_cors
 # Add any other packages your backend uses, e.g.:
 # pandas
